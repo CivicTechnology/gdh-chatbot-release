@@ -1,0 +1,22 @@
+{
+  "description": "CKAN open data portal configuration",
+  "apiBase": "https://ckan.dataplatform.nl/api/3/action",
+  "organization": "gemeente-den-haag",
+  "datasets": {
+    "include": [
+      "stadslandbouw",
+      "buurten",
+      "stadsdelen",
+      "wijken",
+      "bomen-json",
+      "sghgroengebieden",
+      "groenvakken",
+      "ecozones",
+      "ecobomenrijen",
+      "faunavoorzieningen",
+      "natuurvriendelijkeoevers"
+    ],
+    "exclude": []
+  },
+  "notes": "Syncs GeoJSON datasets from gemeente Den Haag's CKAN portal. Include/exclude filters are optional - empty means all datasets."
+}

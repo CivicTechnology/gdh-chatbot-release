@@ -1,0 +1,845 @@
+@import "tailwindcss";
+
+/* include utility classes in streamdown */
+@source "../node_modules/streamdown/dist/index.js";
+
+/* custom variant for setting dark mode programmatically */
+@custom-variant dark (&:is(.dark, .dark *));
+
+/* include plugins */
+@plugin "tailwindcss-animate";
+@plugin "@tailwindcss/typography";
+
+/* define design tokens (light mode) */
+:root {
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(240 10% 3.9%);
+
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(240 10% 3.9%);
+
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(240 10% 3.9%);
+
+  /* Den Haag primair: Groen (PMS 349) */
+  --primary: #046a38;
+  --primary-foreground: #ffffff;
+
+  /* Subtle surfaces */
+  --secondary: #f5f5f4;
+  --secondary-foreground: #0a0a0a;
+
+  /* Accent terug naar neutraal */
+  --muted: #f5f5f4;
+  --muted-foreground: hsl(240 3.8% 46.1%);
+  --accent: #f5f5f4;
+  --accent-foreground: #0a0a0a;
+
+  /* Destructief */
+  --destructive: #b3282d;
+  --destructive-foreground: #ffffff;
+
+  /* Semantic alert colors */
+  --info: #2563eb;
+  --info-foreground: #ffffff;
+  --success: #16a34a;
+  --success-foreground: #ffffff;
+  --warning: #d97706;
+  --warning-foreground: #ffffff;
+
+  /* Randen/inputs/focus */
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #046a38; /* groene focus ring */
+
+  /* Charts (indicatief) */
+  --chart-1: #046a38;
+  --chart-2: #ba8e16;
+  --chart-3: #2563eb;
+  --chart-4: #9333ea;
+  --chart-5: #ea580c;
+
+  /* Sidebar */
+  /* Sidebar same as page background */
+  --sidebar-background: var(--background);
+  --sidebar-foreground: #1f2937;
+  --sidebar-primary: #046a38;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #fff3d1;
+  --sidebar-accent-foreground: #3b2f0a;
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: #046a38;
+
+  /* Border radius tokens */
+  --radius: 0.5rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-full: 9999px;
+
+  /* Spacing tokens (4px base grid) */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Component-specific spacing */
+  --button-padding-x: var(--space-4);
+  --button-padding-y: var(--space-2);
+  --button-padding-x-sm: var(--space-3);
+  --button-padding-y-sm: 6px;
+  --button-gap: var(--space-2);
+  --card-padding: var(--space-6);
+  --card-gap: var(--space-4);
+  --input-padding-x: var(--space-3);
+  --input-padding-y: var(--space-2);
+  --modal-padding: var(--space-6);
+  --section-gap: var(--space-8);
+
+  /* Typography tokens */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.025em;
+
+  /* Animation timing tokens */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+  --duration-slower: 500ms;
+  --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.6, 1);
+
+  /* Shadow tokens */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg:
+    0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl:
+    0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  --sidebar: #fafafa;
+}
+
+/* define design tokens (dark mode) */
+.dark {
+  --background: hsl(220 15% 8%);
+  --foreground: hsl(0 0% 98%);
+  --card: hsl(220 15% 10%);
+  --card-foreground: hsl(0 0% 98%);
+  --popover: hsl(220 15% 10%);
+  --popover-foreground: hsl(0 0% 98%);
+
+  /* Den Haag groen blijft herkenbaar in dark mode */
+  --primary: #34d399; /* Lichtere groentint voor contrast */
+  --primary-foreground: hsl(220 15% 8%);
+
+  --secondary: hsl(220 10% 16%);
+  --secondary-foreground: hsl(0 0% 98%);
+  --muted: hsl(220 10% 16%);
+  --muted-foreground: hsl(220 5% 60%);
+  --accent: hsl(220 10% 16%);
+  --accent-foreground: hsl(0 0% 98%);
+
+  --destructive: #ef4444;
+  --destructive-foreground: hsl(0 0% 98%);
+
+  /* Semantic alert colors (dark mode) */
+  --info: #60a5fa;
+  --info-foreground: hsl(220 15% 8%);
+  --success: #4ade80;
+  --success-foreground: hsl(220 15% 8%);
+  --warning: #fbbf24;
+  --warning-foreground: hsl(220 15% 8%);
+
+  --border: hsl(220 10% 18%);
+  --input: hsl(220 10% 18%);
+  --ring: #34d399;
+
+  /* Charts met Den Haag kleuren */
+  --chart-1: #34d399;
+  --chart-2: #fbbf24;
+  --chart-3: hsl(220 70% 60%);
+  --chart-4: hsl(280 65% 60%);
+  --chart-5: hsl(340 75% 55%);
+
+  /* Sidebar */
+  --sidebar-background: hsl(220 15% 6%);
+  --sidebar-foreground: hsl(0 0% 95%);
+  --sidebar-primary: #34d399;
+  --sidebar-primary-foreground: hsl(220 15% 8%);
+  --sidebar-accent: hsl(220 10% 14%);
+  --sidebar-accent-foreground: hsl(0 0% 95%);
+  --sidebar-border: hsl(220 10% 16%);
+  --sidebar-ring: #34d399;
+  --sidebar: hsl(220 15% 6%);
+
+  /* Shadow tokens (darker for dark mode) */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+  --shadow-lg:
+    0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  --shadow-xl:
+    0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+}
+
+/* define theme */
+@theme {
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
+
+  --breakpoint-toast-mobile: 600px;
+
+  /* Border radius */
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+
+  /* Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  /* Semantic alert colors */
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar-background);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Animation durations */
+  --animate-duration-fast: var(--duration-fast);
+  --animate-duration-base: var(--duration-base);
+  --animate-duration-slow: var(--duration-slow);
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@utility -webkit-overflow-scrolling-touch {
+  -webkit-overflow-scrolling: touch;
+}
+
+@utility touch-pan-y {
+  touch-action: pan-y;
+}
+
+@utility overscroll-behavior-contain {
+  overscroll-behavior: contain;
+}
+
+@layer utilities {
+  :root {
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --foreground-rgb: 255, 255, 255;
+      --background-start-rgb: 0, 0, 0;
+      --background-end-rgb: 0, 0, 0;
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  html {
+    overflow-x: hidden;
+  }
+}
+
+.skeleton {
+  * {
+    /* biome-ignore lint/complexity/noImportantStyles: Required for skeleton to override children */
+    pointer-events: none !important;
+  }
+
+  *[class^="text-"] {
+    color: transparent;
+    @apply rounded-md bg-foreground/20 select-none animate-pulse;
+  }
+
+  .skeleton-bg {
+    @apply bg-foreground/10;
+  }
+
+  .skeleton-div {
+    @apply bg-foreground/20 animate-pulse;
+  }
+}
+
+.ProseMirror {
+  outline: none;
+}
+
+.cm-editor,
+.cm-gutters {
+  @apply bg-background! dark:bg-zinc-800! outline-hidden! selection:bg-zinc-900!;
+}
+
+.ͼo.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground,
+.ͼo.cm-selectionBackground,
+.ͼo.cm-content::selection {
+  @apply bg-zinc-200! dark:bg-zinc-900!;
+}
+
+.cm-activeLine,
+.cm-activeLineGutter {
+  @apply bg-transparent!;
+}
+
+.cm-activeLine {
+  @apply rounded-r-sm!;
+}
+
+.cm-lineNumbers {
+  @apply min-w-7;
+}
+
+.cm-foldGutter {
+  @apply min-w-3;
+}
+
+.cm-lineNumbers .cm-activeLineGutter {
+  @apply rounded-l-sm!;
+}
+
+.suggestion-highlight {
+  background-color: #fff3d1;
+  color: #3b2f0a;
+}
+
+/* minimal scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: --alpha(var(--muted-foreground) / 0.5);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* firefox scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+@theme inline {
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Design System Utility Classes */
+@layer components {
+  /* Button base styles */
+  .ds-btn {
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium text-sm;
+    @apply ring-offset-background transition-colors;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+    @apply disabled:pointer-events-none disabled:opacity-50;
+    transition-duration: var(--duration-fast);
+  }
+
+  .ds-btn-default {
+    @apply h-10 px-4 py-2;
+  }
+
+  .ds-btn-sm {
+    @apply h-9 px-3 py-1.5;
+  }
+
+  .ds-btn-lg {
+    @apply h-11 px-6 py-2.5;
+  }
+
+  .ds-btn-icon {
+    @apply size-10;
+  }
+
+  /* Card styles */
+  .ds-card {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+  }
+
+  .ds-card-header {
+    @apply flex flex-col gap-1.5 p-6;
+  }
+
+  .ds-card-title {
+    @apply font-semibold text-lg leading-none tracking-tight;
+  }
+
+  .ds-card-description {
+    @apply text-muted-foreground text-sm;
+  }
+
+  .ds-card-content {
+    @apply p-6 pt-0;
+  }
+
+  .ds-card-footer {
+    @apply flex items-center justify-end gap-3 p-6 pt-0;
+  }
+
+  /* Input styles */
+  .ds-input {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2;
+    @apply text-base ring-offset-background;
+    @apply placeholder:text-muted-foreground;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
+    @apply md:text-sm;
+    transition-duration: var(--duration-fast);
+  }
+
+  /* Label styles */
+  .ds-label {
+    @apply text-sm font-medium leading-none;
+    @apply peer-disabled:cursor-not-allowed peer-disabled:opacity-70;
+  }
+
+  /* Badge styles */
+  .ds-badge {
+    @apply inline-flex items-center rounded-full border px-2.5 py-0.5;
+    @apply font-semibold text-xs;
+    @apply transition-colors;
+    transition-duration: var(--duration-fast);
+  }
+
+  /* Alert styles */
+  .ds-alert {
+    @apply relative w-full rounded-lg border p-4;
+  }
+
+  .ds-alert-info {
+    @apply bg-info/10 border-info/30 text-info;
+  }
+
+  .ds-alert-success {
+    @apply bg-success/10 border-success/30 text-success;
+  }
+
+  .ds-alert-warning {
+    @apply bg-warning/10 border-warning/30 text-warning;
+  }
+
+  .ds-alert-error {
+    @apply bg-destructive/10 border-destructive/30 text-destructive;
+  }
+
+  /* Section spacing */
+  .ds-section {
+    @apply space-y-8;
+  }
+
+  .ds-section-header {
+    @apply space-y-2;
+  }
+
+  .ds-section-title {
+    @apply font-semibold text-2xl tracking-tight;
+  }
+
+  .ds-section-description {
+    @apply text-muted-foreground;
+  }
+
+  /* Form layouts */
+  .ds-form {
+    @apply space-y-4;
+  }
+
+  .ds-form-field {
+    @apply space-y-2;
+  }
+
+  .ds-form-error {
+    @apply text-sm text-destructive;
+  }
+
+  /* List items */
+  .ds-list-item {
+    @apply flex items-center gap-3 px-3 py-2 rounded-md;
+    @apply transition-colors;
+    transition-duration: var(--duration-fast);
+  }
+
+  .ds-list-item:hover {
+    @apply bg-muted/50;
+  }
+
+  /* Empty state */
+  .ds-empty-state {
+    @apply flex flex-col items-center justify-center py-12 text-center;
+  }
+
+  .ds-empty-state-icon {
+    @apply size-12 text-muted-foreground mb-4;
+  }
+
+  .ds-empty-state-title {
+    @apply font-semibold text-lg;
+  }
+
+  .ds-empty-state-description {
+    @apply text-sm text-muted-foreground max-w-sm mt-1;
+  }
+
+  /* Transitions */
+  .ds-transition {
+    transition-property:
+      color, background-color, border-color, opacity, box-shadow, transform;
+    transition-timing-function: var(--ease-out);
+    transition-duration: var(--duration-fast);
+  }
+
+  .ds-transition-slow {
+    transition-property:
+      color, background-color, border-color, opacity, box-shadow, transform;
+    transition-timing-function: var(--ease-out);
+    transition-duration: var(--duration-slow);
+  }
+}
+
+/* Tool card shimmer animation */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* Tool card icon pulse animation */
+@keyframes tool-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+.animate-tool-pulse {
+  animation: tool-pulse 1.5s ease-in-out infinite;
+}
+
+/* MapLibre popup styling for dark mode support */
+.maplibregl-popup-content {
+  background: var(--popover);
+  color: var(--popover-foreground);
+  border-radius: 0.5rem;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
+  border-top-color: var(--popover);
+}
+
+.maplibregl-popup-anchor-top .maplibregl-popup-tip {
+  border-bottom-color: var(--popover);
+}
+
+.maplibregl-popup-anchor-left .maplibregl-popup-tip {
+  border-right-color: var(--popover);
+}
+
+.maplibregl-popup-anchor-right .maplibregl-popup-tip {
+  border-left-color: var(--popover);
+}
+
+.maplibregl-popup-close-button {
+  color: var(--muted-foreground);
+}
+
+.maplibregl-popup-close-button:hover {
+  color: var(--foreground);
+  background: transparent;
+}
+
+/* MapLibre navigation controls styling for dark mode support */
+.maplibregl-ctrl-group {
+  background: var(--background);
+  border-color: var(--border);
+}
+
+.maplibregl-ctrl-group button {
+  background-color: var(--background);
+  border-color: var(--border);
+}
+
+.maplibregl-ctrl-group button:hover {
+  background-color: var(--muted);
+}
+
+.maplibregl-ctrl-group button + button {
+  border-top-color: var(--border);
+}
+
+.maplibregl-ctrl button .maplibregl-ctrl-icon {
+  filter: var(--maplibre-icon-filter, none);
+}
+
+.dark .maplibregl-ctrl button .maplibregl-ctrl-icon {
+  filter: invert(1);
+}
+
+/* MapLibre attribution styling - use !important to override library styles */
+.maplibregl-ctrl-attrib {
+  background-color: var(--background);
+}
+
+.maplibregl-ctrl-attrib,
+.maplibregl-ctrl-attrib a {
+  color: var(--muted-foreground);
+}
+
+.maplibregl-ctrl-attrib a:hover {
+  color: var(--primary);
+}
+
+.maplibregl-ctrl-attrib.maplibregl-compact {
+  background-color: var(--background);
+}
+
+/* Info icon in compact/closed state - dark icon for light mode */
+.maplibregl-ctrl-attrib.maplibregl-compact::after {
+  background-color: var(--background);
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 16v-4'/%3E%3Cpath d='M12 8h.01'/%3E%3C/svg%3E");
+  background-size: 14px 14px;
+}
+
+/* Info icon in open state - show close icon for light mode */
+.maplibregl-ctrl-attrib.maplibregl-compact-show::after {
+  background-color: var(--background);
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18'/%3E%3Cpath d='m6 6 12 12'/%3E%3C/svg%3E");
+  background-size: 14px 14px;
+}
+
+/* Dark mode: light icons - reset any filters */
+.dark .maplibregl-ctrl-attrib.maplibregl-compact::after {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 16v-4'/%3E%3Cpath d='M12 8h.01'/%3E%3C/svg%3E");
+  filter: none;
+}
+
+.dark .maplibregl-ctrl-attrib.maplibregl-compact-show::after {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18'/%3E%3Cpath d='m6 6 12 12'/%3E%3C/svg%3E");
+  filter: none;
+}
+
+.maplibregl-ctrl-attrib-button {
+  background-color: var(--background);
+}
+
+/* React Data Grid - Clean styling */
+.rdg {
+  --rdg-header-background-color: var(--background);
+  --rdg-background-color: var(--background);
+  --rdg-row-hover-background-color: hsl(var(--muted) / 0.5);
+  --rdg-selection-color: hsl(var(--primary));
+  --rdg-border-color: transparent;
+  font-family: inherit;
+}
+
+.rdg-header-row {
+  background-color: var(--background);
+}
+
+.rdg-cell {
+  border-inline-end: none;
+  color: var(--foreground);
+}
+
+.rdg-header-sort-cell {
+  cursor: pointer;
+}
+
+.rdg-header-sort-cell:hover {
+  background-color: hsl(var(--muted) / 0.5);
+}
+
+.rdg-row:hover {
+  background-color: hsl(var(--muted) / 0.3);
+}
+
+.rdg-row[aria-selected="true"] {
+  background-color: hsl(var(--muted) / 0.5);
+}
+
+/* Dark mode adjustments */
+.dark .rdg {
+  --rdg-header-background-color: var(--background);
+  --rdg-background-color: var(--background);
+  --rdg-row-hover-background-color: hsl(var(--muted) / 0.3);
+}
+
+/* React Data Grid scrollbar styling - more visible */
+.rdg::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.rdg::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 5px;
+}
+
+.rdg::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.4);
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.rdg::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.6);
+  background-clip: content-box;
+}
+
+.rdg::-webkit-scrollbar-corner {
+  background: hsl(var(--muted) / 0.3);
+}
+
+/* Firefox scrollbar for data grid */
+.rdg {
+  scrollbar-width: auto;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.4) hsl(var(--muted) / 0.3);
+}

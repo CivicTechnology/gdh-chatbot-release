@@ -1,0 +1,31 @@
+/* FlowToken customizations */
+
+/* Ensure proper prose styling within FlowToken */
+.prose :where(p):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+}
+
+/* First paragraph no top margin */
+.prose > :first-child {
+  margin-top: 0;
+}
+
+/* Last paragraph no bottom margin */
+.prose > :last-child {
+  margin-bottom: 0;
+}
+
+/* Link styling - make links clearly distinguishable */
+.prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s ease;
+}
+
+.prose
+  :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)):hover {
+  color: var(--primary);
+  opacity: 0.8;
+}

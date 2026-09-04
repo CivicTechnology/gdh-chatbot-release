@@ -1,0 +1,51 @@
+{
+  "name": "gdh-chatbot-monorepo",
+  "version": "4.0.0",
+  "private": true,
+  "packageManager": "bun@1.3.5",
+  "scripts": {
+    "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('bun')===-1){console.error('Please use bun to install dependencies');process.exit(1)}\"",
+    "dev": "bun run --filter @gdh-chatbot/api --filter @gdh-chatbot/web dev",
+    "dev:api": "bun run --filter @gdh-chatbot/api --elide-lines=0 dev",
+    "dev:web": "bun run --filter @gdh-chatbot/web --elide-lines=0 dev",
+    "build": "bun run db:generate && bun run --filter @gdh-chatbot/shared build && bun run --filter '*' build",
+    "build:shared": "bun run --filter @gdh-chatbot/shared build",
+    "build:api": "bun run --filter @gdh-chatbot/api build",
+    "build:web": "bun run --filter @gdh-chatbot/web build",
+    "start": "bun run --filter @gdh-chatbot/api start",
+    "start:api": "bun run --filter @gdh-chatbot/api start",
+    "preview:web": "bun run --filter @gdh-chatbot/web preview",
+    "lint": "bun run --filter '*' lint",
+    "typecheck": "bun run --filter @gdh-chatbot/web typecheck",
+    "db:generate": "bun run --filter @gdh-chatbot/api db:generate",
+    "db:migrate": "bun run --filter @gdh-chatbot/api db:migrate",
+    "db:studio": "bun run --filter @gdh-chatbot/api db:studio",
+    "db:push": "bun run --filter @gdh-chatbot/api db:push",
+    "db:pull": "bun run --filter @gdh-chatbot/api db:pull",
+    "ingest": "bun run --filter @gdh-chatbot/ingestion --elide-lines=0 ingest",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:restart": "docker compose restart",
+    "docker:clean": "docker compose down -v",
+    "docker:dev": "docker compose up"
+  },
+  "overrides": {
+    "glob": ">=10.5.0",
+    "@modelcontextprotocol/sdk": ">=1.24.0",
+    "undici": ">=5.29.0",
+    "body-parser": ">=2.2.1",
+    "mdast-util-to-hast": ">=13.2.1",
+    "ai": ">=5.0.52",
+    "esbuild": ">=0.25.0",
+    "prismjs": ">=1.30.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "kill-port": "^2.0.1",
+    "typescript": "^5.9.3"
+  }
+}

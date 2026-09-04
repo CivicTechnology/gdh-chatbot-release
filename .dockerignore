@@ -1,0 +1,56 @@
+# Dependencies
+node_modules
+**/node_modules
+
+# Build outputs
+**/dist
+**/.next
+**/build
+
+# Environment files (use docker-compose env vars instead)
+.env
+.env.local
+.env*.local
+**/.env
+**/.env.local
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Test files
+**/tests
+**/*.test.ts
+**/*.spec.ts
+**/playwright.config.ts
+test-results
+playwright-report
+blob-report
+playwright
+coverage
+
+# Python
+__pycache__
+*.py[cod]
+.venv
+.venv-docling
+packages/data-collection
+
+# Misc
+.turbo
+storage

@@ -1,0 +1,115 @@
+name: Deploy to Azure Web App - Release
+
+on:
+  push:
+    branches: [release/*]
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: app-gdh-chatbot-api-release
+  NODE_VERSION: "22.x"
+  BUN_VERSION: "1.3.5"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: bun run db:generate
+
+      - name: Build monorepo
+        run: bun run build
+
+      - name: Bundle ingestion scripts (self-contained, no workspace imports)
+        run: |
+          set -euo pipefail
+          mkdir -p deploy/scripts
+          bun build packages/ingestion/processors/import-seed.ts \
+            --target=node --format=esm \
+            --outfile deploy/scripts/seed.mjs
+          bun build packages/ingestion/processors/sync-ckan.ts \
+            --target=node --format=esm \
+            --outfile deploy/scripts/pull-ckan.mjs
+
+      - name: Assemble deploy artifact
+        run: |
+          set -euo pipefail
+          mkdir -p deploy/dist deploy/public deploy/prisma deploy/config deploy/storage/seed
+          cp -r packages/api/dist/. deploy/dist/
+          cp -r packages/api/prisma/. deploy/prisma/
+          cp -r dist/. deploy/public/
+          cp -r packages/api/src/generated/prisma deploy/scripts/prisma-client
+          cp packages/ingestion/storage/seed/documents.json.gz deploy/storage/seed/
+          cp packages/ingestion/config/ckan.json deploy/config/
+          cp deploy-templates/startup.sh deploy-templates/seed.sh deploy-templates/pull-ckan.sh deploy/
+          cp deploy-templates/prisma.config.ts deploy/
+          cp deploy-templates/README.md deploy/
+          cp deploy-templates/.env.example deploy/
+          chmod +x deploy/startup.sh deploy/seed.sh deploy/pull-ckan.sh
+
+          # Minimal package.json with only runtime deps + a "start" that runs
+          # our startup script. Workspace deps are either bundled by tsup
+          # (@gdh-chatbot/shared) or reconstructed below (@gdh-chatbot/api).
+          node <<'EOF'
+          const fs = require("fs");
+          const pkg = JSON.parse(fs.readFileSync("packages/api/package.json", "utf8"));
+          const runtimeDeps = Object.fromEntries(
+            Object.entries(pkg.dependencies).filter(
+              ([name]) => !name.startsWith("@gdh-chatbot/"),
+            ),
+          );
+          // Add prisma CLI so startup.sh can run migrations.
+          runtimeDeps.prisma = pkg.devDependencies.prisma;
+          fs.writeFileSync(
+            "deploy/package.json",
+            JSON.stringify(
+              {
+                name: "gdh-chatbot-azure",
+                version: pkg.version,
+                type: "module",
+                scripts: {
+                  start: "sh startup.sh",
+                  migrate: "prisma migrate deploy",
+                  seed: "node scripts/seed.mjs",
+                  "pull-ckan": "node scripts/pull-ckan.mjs",
+                },
+                dependencies: runtimeDeps,
+                engines: { node: ">=20" },
+              },
+              null,
+              2,
+            ),
+          );
+          EOF
+
+          # Install runtime deps. --omit=optional skips alasql's react-native-fs
+          # peer, which drags in ~200 MB of React Native for no benefit.
+          cd deploy && npm install --omit=dev --omit=optional --no-audit --no-fund
+
+          # The bundled server imports "@gdh-chatbot/api/prisma" (externalised
+          # by tsup). Reconstruct that subpath export in node_modules so Node
+          # can resolve it at runtime.
+          API_PKG_DIR="node_modules/@gdh-chatbot/api"
+          mkdir -p "$API_PKG_DIR/src/generated"
+          cp ../packages/api/package.json "$API_PKG_DIR/package.json"
+          cp -r ../packages/api/src/generated/prisma "$API_PKG_DIR/src/generated/prisma"
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_RELEASE }}
+          package: deploy

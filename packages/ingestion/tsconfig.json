@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/config/*": ["./config/*"],
+      "@/processors/*": ["./processors/*"]
+    }
+  },
+  "include": ["config/**/*", "processors/**/*", "collectors/**/*.ts"],
+  "exclude": ["node_modules", "storage"]
+}

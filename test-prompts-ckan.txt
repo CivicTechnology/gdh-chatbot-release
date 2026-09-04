@@ -1,0 +1,120 @@
+# Complexe Test Prompts voor CKAN Data
+# Gemeente Den Haag Open Data Chatbot
+#
+# Datasets: stadslandbouw, buurten, stadsdelen, wijken, bomen-json,
+# sghgroengebieden, groenvakken, ecozones, ecobomenrijen,
+# faunavoorzieningen, natuurvriendelijkeoevers
+
+## MULTI-DATASET CORRELATIES
+
+1. Hoeveel bomen zijn er per wijk en welke wijken hebben de beste verhouding tussen aantal bomen en groengebied oppervlakte?
+
+2. Geef me een overzicht van alle stadsdelen met hun totale aantal ecozones, faunavoorzieningen en natuurvriendelijke oevers - gesorteerd op biodiversiteit
+
+3. Welke buurten hebben stadslandbouwprojecten maar geen groengebieden? En welke hebben groengebieden maar geen stadslandbouw?
+
+4. Vergelijk het aantal faunavoorzieningen per stadsdeel met het aantal ecobomenrijen - is er een correlatie?
+
+5. Welke wijken scoren het beste op alle groene indicatoren samen (bomen, groengebieden, ecozones)?
+
+6. Toon per stadsdeel: totaal aantal bomen, totaal oppervlakte groengebied, en aantal stadslandbouwprojecten
+
+7. Zijn er buurten die zowel ecozones als natuurvriendelijke oevers hebben? Zo ja, welke en hoeveel van elk?
+
+8. Maak een vergelijking tussen de wijken Segbroek en Loosduinen op alle beschikbare groene datasets
+
+9. Welke stadsdelen hebben de meeste diversiteit aan ecologische voorzieningen (combinatie van alle eco-datasets)?
+
+10. Correleer de aanwezigheid van stadslandbouw met de nabijheid van groengebieden per buurt
+
+
+## GEOGRAFISCHE ANALYSES
+
+11. Toon een kaart met alle bomen in Segbroek, gekleurd op basis van boomsoort
+
+12. Geef me een kaart van alle ecozones met daarbij de faunavoorzieningen die erin liggen
+
+13. Toon alle natuurvriendelijke oevers op een kaart met de dichtstbijzijnde ecobomenrijen
+
+14. Maak een kaart van Den Haag met alle groengebieden en markeer welke stadslandbouwprojecten bevatten
+
+15. Visualiseer de spreiding van faunavoorzieningen over de verschillende stadsdelen
+
+16. Toon een kaart met de 10 grootste groenvakken en hun locatie ten opzichte van wijkgrenzen
+
+17. Geef me een overzichtskaart van alle ecologische verbindingszones (ecobomenrijen + ecozones)
+
+18. Waar liggen de natuurvriendelijke oevers precies? Toon ze op een kaart met de stadsdelen als achtergrond
+
+19. Maak een kaart van het centrum met alle bomen en groengebieden
+
+20. Visualiseer de dichtheid van bomen per buurt op een heatmap
+
+
+## STATISTISCHE ANALYSES
+
+21. Bereken de gemiddelde, minimum en maximum aantal bomen per buurt, opgesplitst per stadsdeel
+
+22. Wat is de totale oppervlakte aan groengebieden per stadsdeel en hoe verhoudt dit zich tot het aantal inwoners?
+
+23. Hoeveel procent van de ecozones bevat minimaal een faunavoorziening?
+
+24. Geef me de top 5 buurten met de hoogste boomdichtheid en de top 5 met de laagste
+
+25. Wat is de gemiddelde grootte van een groenvak per stadsdeel?
+
+26. Bereken het percentage wijken dat minimaal een stadslandbouwproject heeft
+
+27. Hoeveel meter natuurvriendelijke oever is er per stadsdeel?
+
+28. Wat is de verdeling van boomsoorten in de hele stad? Geef de top 10
+
+29. Analyseer de spreiding van ecobomenrijen - zijn ze gelijkmatig verdeeld over de stad?
+
+30. Hoeveel groengebieden zijn er per 1000 inwoners per stadsdeel?
+
+
+## EDGE CASES EN DATA KWALITEIT
+
+31. Hoeveel bomen hebben geen geldige coordinaten of missende locatiegegevens?
+
+32. Zijn er groengebieden zonder naam of met een lege beschrijving?
+
+33. Welke datasets hebben de meeste records met null-waarden in belangrijke velden?
+
+34. Zijn er dubbele records in de bomen dataset (zelfde coordinaten)?
+
+35. Hoeveel faunavoorzieningen hebben een onbekend of leeg type?
+
+36. Zijn er ecozones die overlappen met andere ecozones?
+
+37. Welke stadslandbouwprojecten missen contactgegevens of adresinformatie?
+
+38. Controleer of alle wijken minimaal een buurt bevatten in de data
+
+39. Zijn er natuurvriendelijke oevers zonder lengteaanduiding?
+
+40. Hoeveel records per dataset zijn onvolledig (meer dan 3 lege velden)?
+
+
+## SEMANTISCH UITDAGENDE QUERIES
+
+41. Waar kan ik in Den Haag het beste natuur fotograferen met veel diversiteit aan planten en dieren?
+
+42. Ik wil een stadswandeling maken langs zo veel mogelijk verschillende ecosystemen - welke route raad je aan?
+
+43. Welke buurt zou je aanraden voor iemand die van tuinieren houdt en graag in het groen woont?
+
+44. Waar zijn de beste plekken om vogels te spotten in Den Haag?
+
+45. Ik zoek een rustige groene plek in de buurt van Scheveningen voor een picknick
+
+46. Welke wijk is het meest geschikt voor kinderen die van natuur houden?
+
+47. Waar kan ik meedoen aan stadslandbouw in de buurt van het centrum?
+
+48. Welke gebieden in Den Haag zijn het meest biodivers op basis van de beschikbare data?
+
+49. Ik wil vrijwilligerswerk doen voor natuurbeheer - waar zijn de meeste ecologische projecten?
+
+50. Adviseer me de groenste fietsroute van Loosduinen naar het centrum

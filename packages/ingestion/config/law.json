@@ -1,0 +1,12 @@
+{
+  "description": "Dutch law sources to sync from BWB (Basis Wetten Bestand)",
+  "sources": [
+    {
+      "id": "BWBR0037885",
+      "title": "Omgevingswet",
+      "category": "wetgeving/omgevingsrecht",
+      "tags": ["law", "omgevingswet", "wetgeving"],
+      "description": "De Omgevingswet bundelt en vereenvoudigt de regels voor ruimtelijke ontwikkeling en milieu."
+    }
+  ]
+}

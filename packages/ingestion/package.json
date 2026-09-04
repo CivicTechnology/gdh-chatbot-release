@@ -1,0 +1,36 @@
+{
+  "name": "@gdh-chatbot/ingestion",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "ingest": "./cli.ts"
+  },
+  "scripts": {
+    "ingest": "tsx cli.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ai-sdk/azure": "2.0.123",
+    "@ai-sdk/openai": "^2.0.15",
+    "@gdh-chatbot/api": "workspace:*",
+    "@gdh-chatbot/shared": "workspace:*",
+    "@prisma/adapter-pg": "^7.2.0",
+    "@turf/boolean-point-in-polygon": "^7.3.1",
+    "@turf/helpers": "^7.3.1",
+    "adm-zip": "^0.5.16",
+    "commander": "^13.1.0",
+    "dotenv": "^16.6.1",
+    "pg": "^8.17.1",
+    "proj4": "^2.20.2",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.7",
+    "@types/node": "^22.19.1",
+    "@types/pg": "^8.16.0",
+    "@types/proj4": "^2.19.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

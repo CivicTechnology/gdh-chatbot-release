@@ -1,0 +1,120 @@
+[
+  {
+    "id": "stadslandbouw-aan-de-slag",
+    "title": "Aan de slag - Stadslandbouw Den Haag",
+    "url": "https://stadslandbouwdenhaag.nl/index.php/aan-de-slag-met/",
+    "category": "informatie/praktisch",
+    "tags": [
+      "stadslandbouw",
+      "starten",
+      "initiatief",
+      "grond",
+      "financiering",
+      "organisatie"
+    ],
+    "description": "Praktische handleiding in vijf stappen voor het starten van een stadslandbouwinitiatief: grond vinden, organiseren, financiering, leren en de tuin opbouwen.",
+    "published_at": null,
+    "last_checked_at": null,
+    "notes": "Belangrijke pagina met veel praktische informatie en externe links voor initiatiefnemers."
+  },
+  {
+    "id": "stadslandbouw-vormen",
+    "title": "Stadslandbouwvormen - Stadslandbouw Den Haag",
+    "url": "https://stadslandbouwdenhaag.nl/index.php/05-stadslandbouwvormen/",
+    "category": "informatie/vormen",
+    "tags": ["stadslandbouw", "vormen", "technieken", "methoden"],
+    "description": "Overzicht van verschillende vormen van stadslandbouw en technieken die toegepast kunnen worden.",
+    "published_at": null,
+    "last_checked_at": null,
+    "notes": "Bevat informatie over verschillende types stadslandbouw initiatieven."
+  },
+  {
+    "id": "stadslandbouw-publicaties",
+    "title": "Publicaties - Stadslandbouw Den Haag",
+    "url": "https://stadslandbouwdenhaag.nl/index.php/04-publicaties/",
+    "category": "informatie/publicaties",
+    "tags": ["stadslandbouw", "publicaties", "onderzoek", "rapporten"],
+    "description": "Verzameling van publicaties, onderzoeken en rapporten over stadslandbouw.",
+    "published_at": null,
+    "last_checked_at": null,
+    "notes": "Bevat links naar relevante rapporten en onderzoeken."
+  },
+  {
+    "id": "stadslandbouw-duurzaamheid-groen",
+    "title": "Duurzaamheid & Groen - Stadslandbouw Den Haag",
+    "url": "https://stadslandbouwdenhaag.nl/index.php/01-duurzaamheid-groen/",
+    "category": "informatie/duurzaamheid",
+    "tags": [
+      "duurzaamheid",
+      "groen",
+      "stadslandbouw",
+      "externe bronnen",
+      "links"
+    ],
+    "description": "Overzichtspagina met informatie over duurzaamheid, groen en stadslandbouw, inclusief links naar externe bronnen zoals CBS, Milieu Centraal, en gemeentelijke initiatieven.",
+    "published_at": null,
+    "last_checked_at": null,
+    "notes": "Deze pagina bevat veel externe links die we als metadata willen opslaan bij de chunks."
+  },
+  {
+    "id": "stadslandbouw-gemeente-overheid",
+    "title": "Gemeente & Overheid - Stadslandbouw Den Haag",
+    "url": "https://stadslandbouwdenhaag.nl/index.php/06-gemeente-overheid/",
+    "category": "informatie/overheid",
+    "tags": ["gemeente", "overheid", "beleid", "regelgeving", "Den Haag"],
+    "description": "Informatie over gemeentelijk en overheidsbeleid rondom stadslandbouw, regelgeving en contactgegevens.",
+    "published_at": null,
+    "last_checked_at": null,
+    "notes": "Belangrijke pagina voor beleidsmatige en regelgevende context."
+  },
+  {
+    "id": "stadslandbouw-gezondheid",
+    "title": "Gezondheid - Stadslandbouw Den Haag",
+    "url": "https://stadslandbouwdenhaag.nl/index.php/02-gezondheid/",
+    "category": "informatie/gezondheid",
+    "tags": ["gezondheid", "voeding", "stadslandbouw", "welzijn"],
+    "description": "Informatie over de relatie tussen stadslandbouw en gezondheid, inclusief voeding en welzijn.",
+    "published_at": null,
+    "last_checked_at": null,
+    "notes": "Bevat informatie over gezondheidsaspecten van stadslandbouw."
+  },
+  {
+    "id": "stadslandbouw-home",
+    "title": "Home - Stadslandbouw Den Haag",
+    "url": "https://stadslandbouwdenhaag.nl/index.php/00-2/",
+    "category": "informatie/algemeen",
+    "tags": ["stadslandbouw", "Den Haag", "home", "overzicht"],
+    "description": "Homepage van de stadslandbouw Den Haag website met algemene informatie en overzicht.",
+    "published_at": null,
+    "last_checked_at": null,
+    "notes": "Startpagina met algemene introductie."
+  },
+  {
+    "id": "stadslandbouw-kinderen-educatie",
+    "title": "Kinderen & Educatie - Stadslandbouw Den Haag",
+    "url": "https://stadslandbouwdenhaag.nl/index.php/03-kinderen-educatie/",
+    "category": "informatie/educatie",
+    "tags": ["kinderen", "educatie", "scholen", "leren", "stadslandbouw"],
+    "description": "Informatie over stadslandbouw in relatie tot kinderen, educatie en scholen.",
+    "published_at": null,
+    "last_checked_at": null,
+    "notes": "Bevat educatieve programma's en schoolprojecten."
+  },
+  {
+    "id": "stadslandbouw-netwerk-kennisdeling",
+    "title": "Netwerk & Kennisdeling - Stadslandbouw Den Haag",
+    "url": "https://stadslandbouwdenhaag.nl/index.php/07-netwerk-kennisdeling/",
+    "category": "informatie/netwerk",
+    "tags": [
+      "netwerk",
+      "kennisdeling",
+      "samenwerking",
+      "platform",
+      "stadslandbouw"
+    ],
+    "description": "Informatie over netwerken, platforms en kennisdeling binnen de stadslandbouw gemeenschap.",
+    "published_at": null,
+    "last_checked_at": null,
+    "notes": "Bevat contacten en samenwerkingsverbanden."
+  }
+]

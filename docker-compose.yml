@@ -1,0 +1,40 @@
+# Local development services only.
+# For production, deploy to Azure (see deploy-templates/README.md).
+
+services:
+  # PostgreSQL Database with pgvector and PostGIS extensions
+  postgres:
+    image: ivanlonel/postgis-with-extensions:17-3.5
+    container_name: gdh-chatbot-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: chatbot
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-extensions.sql:/docker-entrypoint-initdb.d/init-extensions.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis (for resumable streams)
+  redis:
+    image: redis:7-alpine
+    container_name: gdh-chatbot-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  postgres_data:
+  redis_data:

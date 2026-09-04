@@ -1,0 +1,265 @@
+// Prisma Schema for gdh-chatbot
+// Migrated from Drizzle ORM
+
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  extensions = [vector, postgis]
+}
+
+// ============================================================================
+// User & Session Tables
+// ============================================================================
+
+/// User table - stores registered user accounts.
+/// Each user can have multiple chat sessions and active sessions.
+model User {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email     String   @unique @db.VarChar(64)
+  password  String?  @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  chats    Chat[]
+  sessions Session[]
+
+  @@map("User")
+}
+
+/// Session table - stores user authentication sessions.
+/// Sessions are tied to a specific user and contain token-based authentication data.
+model Session {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  expiresAt DateTime
+  token     String   @unique @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  ipAddress String?  @db.VarChar(64)
+  userAgent String?
+  userId    String   @db.Uuid
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], name: "Session_userId_idx")
+  @@map("Session")
+}
+
+// ============================================================================
+// Chat & Message Tables
+// ============================================================================
+
+enum ChatVisibility {
+  public
+  private
+}
+
+/// Chat table - represents a conversation thread.
+/// Each chat belongs to a user (authenticated) or session (anonymous).
+model Chat {
+  id          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt   DateTime
+  title       String
+  userId      String?        @db.Uuid
+  sessionId   String?        @db.Uuid
+  visibility  ChatVisibility @default(private)
+  lastContext Json?
+  updatedAt   DateTime?      @default(now()) @updatedAt
+
+  user     User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages Message[]
+  votes    Vote[]
+  streams  Stream[]
+
+  @@index([userId], name: "Chat_userId_idx")
+  @@index([sessionId], name: "Chat_sessionId_idx")
+  @@index([createdAt], name: "Chat_createdAt_idx")
+  @@map("Chat")
+}
+
+/// Message table (v2) - stores individual chat messages.
+/// Messages are part of a chat and can have votes and attachments.
+model Message {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  chatId      String   @db.Uuid
+  role        String   @db.VarChar
+  parts       Json
+  attachments Json
+  createdAt   DateTime
+
+  chat  Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  votes Vote[]
+
+  @@index([chatId], name: "Message_v2_chatId_idx")
+  @@map("Message_v2")
+}
+
+/// Vote table (v2) - stores user votes on messages.
+/// Each vote is uniquely identified by the combination of chat and message IDs.
+model Vote {
+  chatId    String  @db.Uuid
+  messageId String  @db.Uuid
+  isUpvoted Boolean
+
+  chat    Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@id([chatId, messageId])
+  @@map("Vote_v2")
+}
+
+/// Stream table - tracks active streaming responses for chats.
+model Stream {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  chatId    String   @db.Uuid
+  createdAt DateTime
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@map("Stream")
+}
+
+// ============================================================================
+// Document Tables (RAG Pipeline)
+// ============================================================================
+
+/// DocumentSource table - stores metadata about ingested documents.
+model DocumentSource {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceId      String    @unique @db.VarChar(128)
+  title         String
+  url           String
+  category      String    @db.VarChar(64)
+  tags          Json      @default("[]")
+  description   String?
+  publishedAt   DateTime?
+  lastCheckedAt DateTime?
+  notes         String?
+  sha256        String    @db.VarChar(64)
+  bytes         BigInt
+  pageCount     Int
+  manifest      Json?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+
+  chunks DocumentChunk[]
+
+  @@unique([url], name: "DocumentSource_url_unique")
+  @@map("DocumentSource")
+}
+
+/// DocumentChunk table - stores individual text chunks from documents.
+model DocumentChunk {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceId     String   @db.Uuid
+  chunkId      String   @db.VarChar(128)
+  text         String
+  tokenCount   Int
+  pageStart    Int
+  pageEnd      Int
+  chunkType    String   @db.VarChar(32)
+  sectionPath  Json?
+  isTable      Boolean  @default(false)
+  tableId      String?
+  viewerAnchor String?
+  metadata     Json?    @default("{}")
+  order        Int
+  createdAt    DateTime @default(now())
+
+  source     DocumentSource      @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  embeddings DocumentEmbedding[]
+
+  @@unique([sourceId, chunkId], name: "DocumentChunk_sourceId_chunkId_unique")
+  @@unique([sourceId, order], name: "DocumentChunk_sourceId_order_unique")
+  @@index([sourceId], name: "DocumentChunk_sourceId_idx")
+  @@map("DocumentChunk")
+}
+
+/// DocumentEmbedding table - stores vector embeddings for document chunks.
+/// Uses pgvector extension for efficient similarity search.
+model DocumentEmbedding {
+  id             String                      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  chunkId        String                      @db.Uuid
+  embeddingModel String                      @db.VarChar(64)
+  embeddedAt     DateTime
+  embedding      Unsupported("vector(1536)")
+
+  chunk DocumentChunk @relation(fields: [chunkId], references: [id], onDelete: Cascade)
+
+  @@unique([chunkId, embeddingModel], name: "DocumentEmbedding_chunkId_model_unique")
+  @@index([chunkId], name: "DocumentEmbedding_chunkId_idx")
+  @@map("DocumentEmbedding")
+}
+
+// ============================================================================
+// CKAN Tables (Open Data Platform)
+// ============================================================================
+
+/// CkanDataset table - stores metadata about CKAN datasets.
+model CkanDataset {
+  id              String                       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String                       @unique @db.VarChar(64)
+  displayName     String
+  description     String?
+  sourceUrl       String?
+  schema          Json?
+  recordCount     Int                          @default(0)
+  updatedAt       DateTime                     @default(now()) @updatedAt
+  contentHash     String?                      @db.VarChar(64)
+  ckanResourceUrl String?
+  ckanPackageId   String?
+  lastModified    DateTime?
+  embedding       Unsupported("vector(1536)")?
+  createdAt       DateTime?                    @default(now())
+
+  records CkanRecord[]
+
+  @@map("CkanDataset")
+}
+
+/// CkanRecord table - stores individual records from CKAN datasets.
+/// Contains geographic geometry data using PostGIS extension.
+model CkanRecord {
+  id        String                                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  datasetId String                                   @db.Uuid
+  data      Json
+  geometry  Unsupported("geometry(Geometry, 4326)")?
+  createdAt DateTime                                 @default(now())
+
+  dataset CkanDataset @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+
+  @@index([datasetId], name: "CkanRecord_datasetId_idx")
+  @@map("CkanRecord")
+}
+
+// ============================================================================
+// Deprecated Tables (kept for backwards compatibility)
+// ============================================================================
+
+/// Message table (deprecated) - legacy message storage format.
+/// @deprecated Use the Message model (Message_v2 table) instead.
+model MessageDeprecated {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  chatId    String   @db.Uuid
+  role      String   @db.VarChar
+  content   Json
+  createdAt DateTime
+
+  @@index([chatId], name: "Message_chatId_idx")
+  @@map("Message")
+}
+
+/// Vote table (deprecated) - legacy vote storage for messages.
+/// @deprecated Use the Vote model (Vote_v2 table) instead.
+model VoteDeprecated {
+  chatId    String  @db.Uuid
+  messageId String  @db.Uuid
+  isUpvoted Boolean
+
+  @@id([chatId, messageId])
+  @@map("Vote")
+}
