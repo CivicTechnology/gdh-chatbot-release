@@ -30,8 +30,15 @@ class ApiClient {
       const data = await response.json().catch(() => null);
 
       if (!response.ok) {
+        // Prefer the API's `cause` field (specific actionable detail) over the
+        // generic `message` (chat-sdk-error wrapper). Use `||` so empty or
+        // whitespace-only cause falls through to message instead of showing
+        // an empty error toast.
+        const trimmedCause =
+          typeof data?.cause === "string" ? data.cause.trim() : "";
+        const detail = trimmedCause || data?.message || "Request failed";
         return {
-          error: data?.message || "Request failed",
+          error: detail,
           status: response.status,
         };
       }

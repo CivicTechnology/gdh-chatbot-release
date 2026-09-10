@@ -247,7 +247,6 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                     <ChatItem
                       chat={chat}
                       isActive={chat.id === id}
-                      isAnonymous={isAnonymous}
                       key={chat.id}
                       onDelete={(chatId) => {
                         setDeleteId(chatId);
@@ -268,7 +267,6 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                     <ChatItem
                       chat={chat}
                       isActive={chat.id === id}
-                      isAnonymous={isAnonymous}
                       key={chat.id}
                       onDelete={(chatId) => {
                         setDeleteId(chatId);
@@ -289,7 +287,6 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                     <ChatItem
                       chat={chat}
                       isActive={chat.id === id}
-                      isAnonymous={isAnonymous}
                       key={chat.id}
                       onDelete={(chatId) => {
                         setDeleteId(chatId);
@@ -310,7 +307,6 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                     <ChatItem
                       chat={chat}
                       isActive={chat.id === id}
-                      isAnonymous={isAnonymous}
                       key={chat.id}
                       onDelete={(chatId) => {
                         setDeleteId(chatId);
@@ -331,7 +327,6 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                     <ChatItem
                       chat={chat}
                       isActive={chat.id === id}
-                      isAnonymous={isAnonymous}
                       key={chat.id}
                       onDelete={(chatId) => {
                         setDeleteId(chatId);

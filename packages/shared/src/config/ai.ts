@@ -19,7 +19,7 @@ export type ChatModelDefinition = {
 export type ChatConfig = {
   /** Default model ID used when no specific model is requested */
   defaultModel: string;
-  /** Underlying OpenAI model ID (e.g., "gpt-4o", "gpt-5.2") */
+  /** Underlying OpenAI model ID (e.g., "gpt-4o", "gpt-5.5") */
   modelId: string;
   /** Available chat models */
   models: ChatModelDefinition[];
@@ -44,16 +44,16 @@ export type AIConfig = {
 export const aiConfig: AIConfig = {
   chat: {
     defaultModel: "chat-model",
-    modelId: "gpt-5.2",
+    modelId: "gpt-5.5",
     models: [
       {
         id: "chat-model",
-        name: "GPT-5.2",
+        name: "GPT-5.5",
         description: "Advanced multimodal model with vision and text capabilities",
       },
       {
         id: "chat-model-reasoning",
-        name: "GPT-5.2 Reasoning",
+        name: "GPT-5.5 Reasoning",
         description: "Uses advanced chain-of-thought reasoning for complex problems",
       },
     ],

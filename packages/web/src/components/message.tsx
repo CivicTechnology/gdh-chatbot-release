@@ -7,7 +7,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import type { Vote } from "@/lib/db/schema";
+import type { MessageFeedback } from "@/lib/db/schema";
 import type { ChatMessage } from "@/lib/types";
 import { cn, sanitizeText } from "@/lib/utils";
 
@@ -141,20 +141,24 @@ function renderMessagePart({
 const PurePreviewMessage = ({
   chatId,
   message,
-  vote,
+  feedback,
   isLoading,
   setMessages,
   regenerate,
+  sendMessage,
+  status,
   isReadonly,
   requiresScrollPadding,
   toolsSummary,
 }: {
   chatId: string;
   message: ChatMessage;
-  vote: Vote | undefined;
+  feedback: MessageFeedback | undefined;
   isLoading: boolean;
   setMessages: UseChatHelpers<ChatMessage>["setMessages"];
   regenerate: UseChatHelpers<ChatMessage>["regenerate"];
+  sendMessage: UseChatHelpers<ChatMessage>["sendMessage"];
+  status: UseChatHelpers<ChatMessage>["status"];
   isReadonly: boolean;
   requiresScrollPadding: boolean;
   toolsSummary: string | null;
@@ -222,7 +226,7 @@ const PurePreviewMessage = ({
         )}
 
         <div
-          className={cn("flex min-w-0 flex-col gap-2 md:gap-4", {
+          className={cn("flex min-w-0 flex-col gap-3 md:gap-5", {
             "min-h-96": message.role === "assistant" && requiresScrollPadding,
             "w-full": message.role === "assistant" || mode === "edit",
             "max-w-[calc(100%-2.5rem)] sm:max-w-[min(fit-content,80%)]":
@@ -258,7 +262,12 @@ const PurePreviewMessage = ({
 
           {/* Render tool status section */}
           {toolParts.length > 0 && (
-            <ToolsSection parts={toolParts} toolsSummary={toolsSummary} />
+            <ToolsSection
+              parts={toolParts}
+              sendMessage={sendMessage}
+              status={status}
+              toolsSummary={toolsSummary}
+            />
           )}
 
           {/* Render non-tool parts */}
@@ -279,11 +288,11 @@ const PurePreviewMessage = ({
           {!isReadonly && (
             <MessageActions
               chatId={chatId}
+              feedback={feedback}
               isLoading={isLoading}
               key={`action-${message.id}`}
               message={message}
               setMode={setMode}
-              vote={vote}
             />
           )}
         </div>

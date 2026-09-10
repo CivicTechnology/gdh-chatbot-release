@@ -12,7 +12,11 @@
     "db:migrate:deploy": "bunx prisma migrate deploy",
     "db:push": "bunx prisma db push",
     "db:pull": "bunx prisma db pull",
-    "db:studio": "bunx prisma studio"
+    "db:studio": "bunx prisma studio",
+    "cron:expire": "tsx scripts/cron-expire-subsidies.ts",
+    "cron:dead-links": "tsx scripts/cron-check-dead-links.ts",
+    "calibrate:threshold": "tsx scripts/calibrate-threshold.ts",
+    "seed:subsidies": "tsx scripts/seed-subsidies.ts"
   },
   "exports": {
     "./app": {
@@ -27,12 +31,18 @@
       "types": "./src/lib/db/prisma.ts",
       "import": "./dist/lib/db/prisma.js",
       "require": "./dist/lib/db/prisma.js"
+    },
+    "./lib/cvdr/sync": {
+      "types": "./src/lib/cvdr/cvdr-sync.service.ts",
+      "import": "./src/lib/cvdr/cvdr-sync.service.ts"
     }
   },
   "dependencies": {
     "@ai-sdk/azure": "2.0.123",
     "@ai-sdk/openai": "^2.0.15",
     "@ai-sdk/xai": "^2.0.13",
+    "@azure/identity": "^4.13.1",
+    "@azure/msal-node": "^5.2.2",
     "@azure/storage-blob": "^12.31.0",
     "@gdh-chatbot/shared": "workspace:*",
     "@prisma/adapter-pg": "^7.2.0",
@@ -48,10 +58,13 @@
     "dotenv": "^17.2.3",
     "express": "^4.21.0",
     "express-rate-limit": "^7.4.0",
+    "fast-xml-parser": "^5.8.0",
     "file-type": "^21.1.1",
     "helmet": "^8.0.0",
     "multer": "^1.4.5-lts.1",
+    "otplib": "^13.4.1",
     "pg": "^8.17.1",
+    "qrcode": "^1.5.4",
     "redis": "^5.0.0",
     "resumable-stream": "^2.0.0",
     "tailwind-merge": "^2.5.5",
@@ -64,6 +77,7 @@
     "@types/express": "^4.17.21",
     "@types/multer": "^1.4.12",
     "@types/pg": "^8.16.0",
+    "@types/qrcode": "^1.5.6",
     "prisma": "^7.2.0",
     "tsup": "^8.0.0",
     "tsx": "^4.19.1",

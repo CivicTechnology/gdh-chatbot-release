@@ -9,6 +9,7 @@
 // Re-export types (map Gdh-prefixed names back to web-friendly names)
 export type {
   GdhBericht as DBMessage,
+  GdhBerichtFeedback as MessageFeedback,
   GdhDataportaalDataset as CkanDataset,
   GdhDataportaalRecord as CkanRecord,
   GdhDocumentBron as DocumentSource,

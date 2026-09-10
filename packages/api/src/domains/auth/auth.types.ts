@@ -5,6 +5,7 @@ export interface AuthUser {
 	id: string;
 	email: string;
 	type: "regular";
+	role: string;
 }
 
 export interface AuthSession {

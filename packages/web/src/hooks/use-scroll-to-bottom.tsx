@@ -119,6 +119,17 @@ export function useScrollToBottom() {
     [setScrollBehavior]
   );
 
+  /**
+   * Zet het automatisch meescrollen naar beneden uit. Nodig voordat we ergens
+   * anders naartoe scrollen: de observers trekken een lopende stream anders
+   * meteen weer naar de onderkant. De ref wordt direct meegezet, want het
+   * effect dat state naar ref synct loopt pas een render later.
+   */
+  const stopSticky = useCallback(() => {
+    isStickyRef.current = false;
+    setIsSticky(false);
+  }, []);
+
   function onViewportEnter() {
     setIsAtBottom(true);
   }
@@ -133,6 +144,7 @@ export function useScrollToBottom() {
     isAtBottom,
     isSticky,
     scrollToBottom,
+    stopSticky,
     onViewportEnter,
     onViewportLeave,
   };

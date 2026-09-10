@@ -6,7 +6,7 @@ import { gzip } from "node:zlib";
 import type {
   DocumentChunk,
   DocumentSource,
-} from "@gdh-chatbot/shared/db";
+} from "@gdh-chatbot/api/prisma";
 import { loadEnv } from "../lib/load-env.js";
 import { disconnectPrisma, prisma } from "../lib/prisma.js";
 

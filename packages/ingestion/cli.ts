@@ -94,9 +94,14 @@ const pullCmd = program
         await runProcessor("sync-law.ts", args);
         break;
 
+      case "cvdr":
+        console.log("Syncing Den Haag subsidieregelingen from CVDR...\n");
+        await runProcessor("sync-cvdr.ts", args);
+        break;
+
       default:
         console.error(`Unknown source: ${source}`);
-        console.error("Available sources: pdf, web, ckan, law");
+        console.error("Available sources: pdf, web, ckan, law, cvdr");
         process.exit(1);
     }
   });
@@ -109,11 +114,14 @@ Sources:
   web   - Scrape content from websites
   ckan  - Sync datasets from CKAN portal
   law   - Sync Dutch environmental law (Omgevingswet)
+  cvdr  - Sync Den Haag subsidieregelingen from CVDR (lokaleregelgeving.overheid.nl)
 
 Examples:
   $ ingest pull pdf
   $ ingest pull web --source ./config/custom-sources.json
   $ ingest pull ckan --force
+  $ ingest pull cvdr
+  $ ingest pull cvdr --since 2026-05-01
 `
 );
 

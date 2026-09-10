@@ -304,3 +304,9 @@ export type Attachment = {
   url: string;
   contentType: string;
 };
+
+/**
+ * Zichtbaarheid van een gesprek. "public" betekent dat iedereen met de
+ * deel-link het gesprek kan lezen; zie ShareDialog.
+ */
+export type VisibilityType = "private" | "public";

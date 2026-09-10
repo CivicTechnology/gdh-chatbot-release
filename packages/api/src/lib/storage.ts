@@ -1,3 +1,4 @@
+import { DefaultAzureCredential } from "@azure/identity";
 import { BlobServiceClient, StorageSharedKeyCredential } from "@azure/storage-blob";
 import { config } from "@/config/index.js";
 
@@ -11,20 +12,29 @@ type StorageProvider = {
   upload: (filename: string, buffer: Buffer, contentType: string) => Promise<UploadResult>;
 };
 
+const resolveAzureClient = (
+  accountName: string,
+  accountKey: string | undefined,
+  connectionString: string | undefined,
+): BlobServiceClient => {
+  const endpoint = `https://${accountName}.blob.core.windows.net`;
+  if (accountKey) {
+    return new BlobServiceClient(endpoint, new StorageSharedKeyCredential(accountName, accountKey));
+  }
+  if (connectionString) {
+    return BlobServiceClient.fromConnectionString(connectionString);
+  }
+  // Geen sleutel of connection-string: managed identity (DefaultAzureCredential).
+  // De veilige weg op Azure Container Apps via de Blob Data Contributor-rol,
+  // zonder langlevende account-key in de configuratie.
+  return new BlobServiceClient(endpoint, new DefaultAzureCredential());
+};
+
 const azureProvider = (): StorageProvider | null => {
-  const { accountName, accountKey, containerName } = config.storage.azure;
+  const { accountName, accountKey, connectionString, containerName } = config.storage.azure;
   if (!accountName || !containerName) return null;
 
-  const credential = accountKey
-    ? new StorageSharedKeyCredential(accountName, accountKey)
-    : undefined;
-
-  const client = credential
-    ? new BlobServiceClient(`https://${accountName}.blob.core.windows.net`, credential)
-    : BlobServiceClient.fromConnectionString(
-        config.storage.azure.connectionString ?? "",
-      );
-
+  const client = resolveAzureClient(accountName, accountKey, connectionString);
   const container = client.getContainerClient(containerName);
 
   return {
@@ -46,7 +56,7 @@ const resolveProvider = (): StorageProvider => {
   const provider = azureProvider();
   if (!provider) {
     throw new Error(
-      "No storage provider configured. Set AZURE_STORAGE_ACCOUNT_NAME (+ key or connection string).",
+      "No storage provider configured. Set AZURE_STORAGE_ACCOUNT_NAME (+ key, connection string, or managed identity).",
     );
   }
   return provider;

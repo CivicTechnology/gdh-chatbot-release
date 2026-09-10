@@ -5,7 +5,7 @@
   "packageManager": "bun@1.3.5",
   "scripts": {
     "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('bun')===-1){console.error('Please use bun to install dependencies');process.exit(1)}\"",
-    "dev": "bun run --filter @gdh-chatbot/api --filter @gdh-chatbot/web dev",
+    "dev": "concurrently -k -n api,web -c blue,green \"bun run --filter @gdh-chatbot/api dev\" \"bun run --filter @gdh-chatbot/web dev\"",
     "dev:api": "bun run --filter @gdh-chatbot/api --elide-lines=0 dev",
     "dev:web": "bun run --filter @gdh-chatbot/web --elide-lines=0 dev",
     "build": "bun run db:generate && bun run --filter @gdh-chatbot/shared build && bun run --filter '*' build",
@@ -45,6 +45,7 @@
     "packages/*"
   ],
   "devDependencies": {
+    "concurrently": "^10.0.0",
     "kill-port": "^2.0.1",
     "typescript": "^5.9.3"
   }

@@ -4,6 +4,7 @@ export type User = {
   id: string;
   email: string;
   type: "regular";
+  role: string;
 };
 
 export type Session = {
@@ -19,6 +20,8 @@ export type RegisterCredentials = {
   email: string;
   password: string;
 };
+
+export type AuthMethods = { entra: boolean; local: boolean };
 
 export const authApi = {
   async login(credentials: LoginCredentials) {
@@ -41,5 +44,26 @@ export const authApi = {
 
   async getSession() {
     return apiClient.get<Session>("/auth/session");
+  },
+
+  async getMethods() {
+    return apiClient.get<AuthMethods>("/auth/methods");
+  },
+
+  async mfaVerify(mfaToken: string, code: string) {
+    return apiClient.post<Session>("/auth/mfa/verify", { mfaToken, code });
+  },
+
+  async mfaEnrollStart(enrollToken: string) {
+    return apiClient.post<{ qrDataUrl: string }>("/auth/mfa/enroll/start", {
+      enrollToken,
+    });
+  },
+
+  async mfaEnrollVerify(enrollToken: string, code: string) {
+    return apiClient.post<Session & { backupCodes: string[] }>(
+      "/auth/mfa/enroll/verify",
+      { enrollToken, code }
+    );
   },
 };

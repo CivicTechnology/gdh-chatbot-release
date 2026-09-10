@@ -33,12 +33,12 @@ export function createMyProvider(config: ProviderConfig): Provider {
 
   return customProvider({
     languageModels: {
-      "chat-model": openai.languageModel("gpt-5.2"),
+      "chat-model": openai.languageModel("gpt-5.5"),
       "chat-model-reasoning": wrapLanguageModel({
-        model: openai.languageModel("gpt-5.2"),
+        model: openai.languageModel("gpt-5.5"),
         middleware: extractReasoningMiddleware({ tagName: "think" }),
       }),
-      "title-model": openai.languageModel("gpt-5.2"),
+      "title-model": openai.languageModel("gpt-5.5"),
     },
   });
 }

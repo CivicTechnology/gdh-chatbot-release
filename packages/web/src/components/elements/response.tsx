@@ -23,7 +23,7 @@ export const Response = memo(
           "[&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
           "[&_code]:whitespace-pre-wrap [&_code]:break-words",
           "[&_pre]:max-w-full [&_pre]:overflow-x-auto",
-          "[&_table]:max-w-full [&_table]:overflow-x-auto [&_table]:block [&_table]:w-fit",
+          "response-md",
           className
         )}
       >

@@ -21,7 +21,7 @@ function createPrismaClient(): PrismaClient {
 
 	const pool = new pg.Pool({
 		connectionString,
-		max: 5, // Reduced to avoid overwhelming Neon
+		max: 5, // Small pool: batch jobs must not exhaust the database connection limit
 		idleTimeoutMillis: 60000, // 60 seconds
 		connectionTimeoutMillis: 10000, // 10 seconds to establish connection
 	});

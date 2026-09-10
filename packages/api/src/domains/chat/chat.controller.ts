@@ -19,6 +19,10 @@ import { messageLimits } from "@/middleware/rate-limiter.js";
 import { myProvider } from "@/lib/ai/providers.js";
 import { type RequestHints, systemPrompt } from "@/lib/ai/prompts.js";
 import { getCkanInfo, queryCkan, searchCkanDatasets } from "@/lib/ai/tools/query-ckan.js";
+import { findSubsidies } from "@/lib/ai/tools/find-subsidies.js";
+import { getSubsidieDetail } from "@/lib/ai/tools/get-subsidie-detail.js";
+import { checkSubsidieEligibility } from "@/lib/ai/tools/check-subsidie-eligibility.js";
+import { compareSubsidies } from "@/lib/ai/tools/compare-subsidies.js";
 import { searchDocuments } from "@/lib/ai/tools/search-documents.js";
 import { searchLawArticles } from "@/lib/ai/tools/search-law-articles.js";
 import { searchRelevantLinks } from "@/lib/ai/tools/search-relevant-links.js";
@@ -102,6 +106,10 @@ const toolDescriptions: Record<string, string> = {
 	searchDocuments: "beleidsdocumenten",
 	searchLawArticles: "de Omgevingswet",
 	searchRelevantLinks: "relevante pagina's",
+	findSubsidies: "subsidieregelingen",
+	getSubsidieDetail: "details van een regeling",
+	checkSubsidieEligibility: "of je in aanmerking komt",
+	compareSubsidies: "een vergelijking van regelingen",
 	searchCkanDatasets: "beschikbare datasets",
 	getCkanInfo: "dataset informatie",
 	queryCkan: "gemeentelijke data",
@@ -327,6 +335,10 @@ export async function createChat(req: AuthenticatedRequest, res: Response): Prom
 						searchDocuments,
 						searchLawArticles,
 						searchRelevantLinks,
+						findSubsidies,
+						getSubsidieDetail,
+						checkSubsidieEligibility,
+						compareSubsidies,
 						showMap,
 						showTable,
 					},
@@ -468,11 +480,6 @@ export async function createChat(req: AuthenticatedRequest, res: Response): Prom
 
 		if (error instanceof ChatSDKError) {
 			res.status(error.statusCode).json(error.toResponse());
-			return;
-		}
-
-		if (error instanceof Error && error.message?.includes("AI Gateway requires a valid credit card")) {
-			res.status(400).json(new ChatSDKError("bad_request:activate_gateway").toResponse());
 			return;
 		}
 

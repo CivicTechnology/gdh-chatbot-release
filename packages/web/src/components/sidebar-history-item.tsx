@@ -1,23 +1,11 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { useChatVisibility } from "@/hooks/use-chat-visibility";
 import type { Chat } from "@/lib/db/schema";
-import {
-  CheckCircleFillIcon,
-  GlobeIcon,
-  LockIcon,
-  MoreHorizontalIcon,
-  ShareIcon,
-  TrashIcon,
-} from "./icons";
+import { MoreHorizontalIcon, TrashIcon } from "./icons";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuPortal,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import {
@@ -29,105 +17,55 @@ import {
 const PureChatItem = ({
   chat,
   isActive,
-  isAnonymous,
   onDelete,
   setOpenMobile,
 }: {
   chat: Chat;
   isActive: boolean;
-  isAnonymous: boolean;
+  /**
+   * Niet meer gebruikt in dit item: delen loopt via de Delen-knop in de
+   * kop van het gesprek. De prop blijft staan voor de aanroep in
+   * sidebar-history.tsx.
+   */
   onDelete: (chatId: string) => void;
   setOpenMobile: (open: boolean) => void;
-}) => {
-  const { visibilityType, setVisibilityType } = useChatVisibility({
-    chatId: chat.id,
-    initialVisibilityType: chat.visibility,
-  });
+}) => (
+  <SidebarMenuItem>
+    <SidebarMenuButton
+      asChild
+      className="data-[active=true]:font-medium data-[active=true]:text-primary"
+      isActive={isActive}
+    >
+      <Link onClick={() => setOpenMobile(false)} to={`/chat/${chat.id}`}>
+        <span>{chat.title}</span>
+      </Link>
+    </SidebarMenuButton>
 
-  return (
-    <SidebarMenuItem>
-      <SidebarMenuButton
-        asChild
-        className="data-[active=true]:font-medium data-[active=true]:text-primary"
-        isActive={isActive}
-      >
-        <Link onClick={() => setOpenMobile(false)} to={`/chat/${chat.id}`}>
-          <span>{chat.title}</span>
-        </Link>
-      </SidebarMenuButton>
+    <DropdownMenu modal={true}>
+      <DropdownMenuTrigger asChild>
+        <SidebarMenuAction
+          className="mr-0.5 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+          showOnHover={!isActive}
+        >
+          <MoreHorizontalIcon />
+          <span className="sr-only">Meer</span>
+        </SidebarMenuAction>
+      </DropdownMenuTrigger>
 
-      <DropdownMenu modal={true}>
-        <DropdownMenuTrigger asChild>
-          <SidebarMenuAction
-            className="mr-0.5 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            showOnHover={!isActive}
-          >
-            <MoreHorizontalIcon />
-            <span className="sr-only">Meer</span>
-          </SidebarMenuAction>
-        </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" side="bottom">
+        <DropdownMenuItem
+          className="cursor-pointer text-destructive focus:bg-destructive/15 focus:text-destructive dark:text-red-500"
+          onSelect={() => onDelete(chat.id)}
+        >
+          <TrashIcon />
+          <span>Verwijderen</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  </SidebarMenuItem>
+);
 
-        <DropdownMenuContent align="end" side="bottom">
-          {!isAnonymous && (
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger className="cursor-pointer">
-                <ShareIcon />
-                <span>Delen</span>
-              </DropdownMenuSubTrigger>
-              <DropdownMenuPortal>
-                <DropdownMenuSubContent>
-                  <DropdownMenuItem
-                    className="cursor-pointer flex-row justify-between"
-                    onClick={() => {
-                      setVisibilityType("private");
-                    }}
-                  >
-                    <div className="flex flex-row items-center gap-2">
-                      <LockIcon size={12} />
-                      <span>Privé</span>
-                    </div>
-                    {visibilityType === "private" ? (
-                      <CheckCircleFillIcon />
-                    ) : null}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="cursor-pointer flex-row justify-between"
-                    onClick={() => {
-                      setVisibilityType("public");
-                    }}
-                  >
-                    <div className="flex flex-row items-center gap-2">
-                      <GlobeIcon />
-                      <span>Openbaar</span>
-                    </div>
-                    {visibilityType === "public" ? (
-                      <CheckCircleFillIcon />
-                    ) : null}
-                  </DropdownMenuItem>
-                </DropdownMenuSubContent>
-              </DropdownMenuPortal>
-            </DropdownMenuSub>
-          )}
-
-          <DropdownMenuItem
-            className="cursor-pointer text-destructive focus:bg-destructive/15 focus:text-destructive dark:text-red-500"
-            onSelect={() => onDelete(chat.id)}
-          >
-            <TrashIcon />
-            <span>Verwijderen</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </SidebarMenuItem>
-  );
-};
-
-export const ChatItem = memo(PureChatItem, (prevProps, nextProps) => {
-  if (prevProps.isActive !== nextProps.isActive) {
-    return false;
-  }
-  if (prevProps.isAnonymous !== nextProps.isAnonymous) {
-    return false;
-  }
-  return true;
-});
+export const ChatItem = memo(
+  PureChatItem,
+  (prevProps, nextProps) => prevProps.isActive === nextProps.isActive
+);

@@ -1,4 +1,4 @@
-import { ChevronUp, Trash2Icon } from "lucide-react";
+import { ChevronUp, Monitor, Moon, Sun, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/auth/useAuth";
@@ -17,7 +17,12 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -34,12 +39,13 @@ type User = {
   id: string;
   email: string;
   type?: "regular";
+  role?: string;
 };
 
 export function SidebarUserNav({ user }: { user: User | undefined }) {
   const navigate = useNavigate();
   const { isLoading, logout, isAnonymous } = useAuth();
-  const { setTheme, resolvedTheme } = useTheme();
+  const { setTheme, theme } = useTheme();
   const { clearAllLocalChats, localChats } = useLocalChats();
   const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
   const [isDeletingAll, setIsDeletingAll] = useState(false);
@@ -135,15 +141,58 @@ export function SidebarUserNav({ user }: { user: User | undefined }) {
             data-testid="user-nav-menu"
             side="top"
           >
-            <DropdownMenuItem
-              className="cursor-pointer"
-              data-testid="user-nav-item-theme"
-              onSelect={() =>
-                setTheme(resolvedTheme === "dark" ? "light" : "dark")
-              }
-            >
-              {resolvedTheme === "light" ? "Donkere modus" : "Lichte modus"}
-            </DropdownMenuItem>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger
+                className="cursor-pointer"
+                data-testid="user-nav-item-theme"
+              >
+                {theme === "light" ? (
+                  <Sun className="mr-2 size-4" />
+                ) : theme === "dark" ? (
+                  <Moon className="mr-2 size-4" />
+                ) : (
+                  <Monitor className="mr-2 size-4" />
+                )}
+                Thema
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuRadioGroup onValueChange={setTheme} value={theme}>
+                  <DropdownMenuRadioItem
+                    className="cursor-pointer"
+                    data-testid="user-nav-theme-system"
+                    value="system"
+                  >
+                    <Monitor className="mr-2 size-4" />
+                    Systeem
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem
+                    className="cursor-pointer"
+                    data-testid="user-nav-theme-light"
+                    value="light"
+                  >
+                    <Sun className="mr-2 size-4" />
+                    Licht
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem
+                    className="cursor-pointer"
+                    data-testid="user-nav-theme-dark"
+                    value="dark"
+                  >
+                    <Moon className="mr-2 size-4" />
+                    Donker
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            {user?.role === "beheerder" ? (
+              <DropdownMenuItem
+                className="cursor-pointer"
+                data-testid="user-nav-item-admin"
+                onSelect={() => navigate("/admin")}
+              >
+                Beheerportaal openen
+              </DropdownMenuItem>
+            ) : null}
             {hasChats && (
               <DropdownMenuItem
                 className="cursor-pointer text-destructive focus:text-destructive"

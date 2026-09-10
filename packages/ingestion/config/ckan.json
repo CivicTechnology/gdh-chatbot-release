@@ -1,6 +1,6 @@
 {
-  "description": "CKAN open data portal configuration",
-  "apiBase": "https://ckan.dataplatform.nl/api/3/action",
+  "description": "Den Haag OpenDataSoft open data portal configuration",
+  "apiBase": "https://den-haag-opendata.opendatasoft.com/api/explore/v2.1",
   "organization": "gemeente-den-haag",
   "datasets": {
     "include": [
@@ -8,7 +8,7 @@
       "buurten",
       "stadsdelen",
       "wijken",
-      "bomen-json",
+      "bomen-gpkg",
       "sghgroengebieden",
       "groenvakken",
       "ecozones",
@@ -18,5 +18,5 @@
     ],
     "exclude": []
   },
-  "notes": "Syncs GeoJSON datasets from gemeente Den Haag's CKAN portal. Include/exclude filters are optional - empty means all datasets."
+  "notes": "Syncs GeoJSON datasets from gemeente Den Haag's OpenDataSoft portal (Explore API v2.1). GeoJSON is exported in EPSG:28992 (RD New) so the RD->WGS84 transform stays valid. Include/exclude filter on ODS dataset_id; empty include = all geo-enabled datasets."
 }

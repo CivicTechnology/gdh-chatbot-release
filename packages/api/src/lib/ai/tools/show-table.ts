@@ -9,18 +9,18 @@ const dataQuerySchema = z.object({
 		.describe("Dataset naam (uit getCkanInfo)"),
 	sql: z.string().describe(`PostgreSQL query voor tabel data.
 
-⚠️ KRITIEK - JSONB SYNTAX IS VERPLICHT:
+KRITIEK - JSONB SYNTAX IS VERPLICHT:
 Alle velden zitten in de 'data' JSONB kolom. Je MOET de JSONB operators gebruiken:
 - data->>'veldnaam' voor tekst (dubbele pijl)
 - (data->>'veld')::float voor decimale getallen
 - (data->>'veld')::int voor hele getallen
 
-⚠️ STRING CONCATENATIE - Gebruik CONCAT(), NIET ||:
-❌ FOUT: 'Prefix: '||data->>'veld' (veroorzaakt JSON parse error)
-✓ GOED: CONCAT('Prefix: ', data->>'veld')
+STRING CONCATENATIE - Gebruik CONCAT(), NIET ||:
+FOUT: 'Prefix: '||data->>'veld' (veroorzaakt JSON parse error)
+GOED: CONCAT('Prefix: ', data->>'veld')
 
-❌ FOUT: SELECT naam, adres FROM dataset
-✓ GOED: SELECT data->>'naam' as naam, data->>'adres' as adres FROM dataset
+FOUT: SELECT naam, adres FROM dataset
+GOED: SELECT data->>'naam' as naam, data->>'adres' as adres FROM dataset
 
 Geef kolommen duidelijke aliases met AS voor leesbare kolomnamen.`),
 	limit: z
@@ -84,7 +84,7 @@ De tabel ondersteunt:
 - Zoeken/filteren
 - Virtualisatie voor grote datasets (duizenden rijen)
 
-⚠️ LET OP: Alle velden zitten in de 'data' JSONB kolom!
+LET OP: Alle velden zitten in de 'data' JSONB kolom!
 
 Voorbeeld query:
 dataQuery: {

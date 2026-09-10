@@ -1,11 +1,11 @@
 import { memo } from "react";
 import { useNavigate } from "react-router-dom";
+import { OverZoektool } from "@/components/over-zoektool";
+import { ShareDialog } from "@/components/share-dialog";
 import { SidebarToggle } from "@/components/sidebar-toggle";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import type { VisibilityType } from "@/lib/types";
 import { PlusIcon } from "./icons";
-import { useSidebar } from "./ui/sidebar";
-import { VisibilitySelector, type VisibilityType } from "./visibility-selector";
 
 function PureChatHeader({
   chatId,
@@ -17,7 +17,6 @@ function PureChatHeader({
   isReadonly: boolean;
 }) {
   const navigate = useNavigate();
-  const { open } = useSidebar();
 
   const handleNewChat = () => {
     // Navigate to / with unique state to force ChatPage to remount
@@ -29,24 +28,25 @@ function PureChatHeader({
       <SidebarToggle />
 
       <Button
-        className={cn(
-          "order-2 ml-auto h-8 border-[--color-primary] px-2 text-primary md:order-1 md:ml-0 md:h-fit md:px-2",
-          open && "md:hidden"
-        )}
+        className="order-2 ml-auto h-8 shrink-0 border-[--color-primary] px-2 text-primary md:order-1 md:ml-0 md:h-fit md:px-3"
         onClick={handleNewChat}
         variant="outline"
       >
         <PlusIcon />
-        <span className="md:sr-only">Nieuw gesprek</span>
+        <span>Nieuw gesprek</span>
       </Button>
 
       {!isReadonly && (
-        <VisibilitySelector
+        <ShareDialog
           chatId={chatId}
           className="order-1 md:order-2"
-          selectedVisibilityType={selectedVisibilityType}
+          initialVisibilityType={selectedVisibilityType}
         />
       )}
+
+      <div className="order-3 ml-auto">
+        <OverZoektool />
+      </div>
     </header>
   );
 }

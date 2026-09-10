@@ -3,22 +3,22 @@
 import type { UseChatHelpers } from "@ai-sdk/react";
 import { motion } from "framer-motion";
 import {
+  BadgeEuro,
+  CalendarClock,
   FileText,
-  Link,
+  HelpCircle,
   type LucideIcon,
-  Map as MapIcon,
   Scale,
-  Table,
+  Search,
 } from "lucide-react";
-import { memo, useMemo } from "react";
+import { memo, useMemo, useRef } from "react";
 import { toolColorClasses } from "@/components/tool-card/tool-config";
 import {
-  getRandomSuggestions,
+  getLandingSuggestions,
   type SuggestionCategory,
 } from "@/lib/suggestions";
-import type { ChatMessage } from "@/lib/types";
+import type { ChatMessage, VisibilityType } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import type { VisibilityType } from "./visibility-selector";
 
 type SuggestedActionsProps = {
   chatId: string;
@@ -27,23 +27,28 @@ type SuggestedActionsProps = {
 };
 
 const categoryIcons: Record<SuggestionCategory, LucideIcon> = {
-  map: MapIcon,
-  data: Table,
-  policy: FileText,
-  legal: Scale,
-  practical: Link,
+  ontdekken: Search,
+  voorwaarden: BadgeEuro,
+  aanvragen: FileText,
+  vergelijken: Scale,
+  deadlines: CalendarClock,
+  uitleg: HelpCircle,
 };
 
 const categoryColors: Record<SuggestionCategory, string> = {
-  map: "teal",
-  data: "green",
-  policy: "blue",
-  legal: "purple",
-  practical: "orange",
+  ontdekken: "sky",
+  voorwaarden: "green",
+  aanvragen: "blue",
+  vergelijken: "teal",
+  deadlines: "orange",
+  uitleg: "purple",
 };
 
 function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
-  const suggestions = useMemo(() => getRandomSuggestions(4), []);
+  const suggestions = useMemo(() => getLandingSuggestions(4, "ontdekken"), []);
+  // Latch so rapid double-clicks (before this list unmounts on first send)
+  // can't fire multiple concurrent user messages on a fresh chat.
+  const sentRef = useRef(false);
 
   return (
     <div
@@ -69,6 +74,8 @@ function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
             initial={{ opacity: 0, y: 10 }}
             key={suggestion.text}
             onClick={() => {
+              if (sentRef.current) return;
+              sentRef.current = true;
               window.history.replaceState({}, "", `/chat/${chatId}`);
               sendMessage({
                 role: "user",

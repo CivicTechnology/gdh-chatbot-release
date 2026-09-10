@@ -3,9 +3,8 @@
 This project is organized as a **bun workspace monorepo**:
 - `packages/web/` - Vite + React SPA (TypeScript)
 - `packages/api/` - Express.js API server (TypeScript)
-- `packages/shared/` - Shared types, utilities, and AI tools (TypeScript)
-- `packages/pipeline/` - Data ingestion scripts (TypeScript)
-- `packages/data-collection/` - Python scripts for document processing and web scraping
+- `packages/shared/` - Shared types, config, utilities and validation (TypeScript)
+- `packages/ingestion/` - Data ingestion pipeline: TypeScript processors + Python collectors
 
 Commands should be run from the monorepo root (see root `package.json` for available scripts).
 

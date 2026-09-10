@@ -300,7 +300,7 @@ De response bevat per dataset:
 - recordCount: aantal records
 - fields: alle veldnamen met hun types
 
-⚠️ BELANGRIJK: Veldnamen zijn CASE-SENSITIVE en vaak UPPERCASE (STADSDEEL, WIJKNAAM, BUURTNAAM).
+BELANGRIJK: Veldnamen zijn CASE-SENSITIVE en meestal lowercase (bijv. wijknaam, buurtnaam, stadsdeelnaam, boomnummer).
 Gebruik de exacte veldnamen uit deze response in je queries!`,
 
 	inputSchema: z.object({
@@ -352,16 +352,16 @@ Gebruik de exacte veldnamen uit deze response in je queries!`,
 export const queryCkan = tool({
 	description: `Query gemeentelijke datasets van Den Haag met PostgreSQL.
 
-⚠️ VEREISTE WORKFLOW - NIET OVERSLAAN:
+VEREISTE WORKFLOW - NIET OVERSLAAN:
 1. EERST searchCkanDatasets() aanroepen om relevante datasets te vinden
 2. DAN getCkanInfo() aanroepen om de exacte veldnamen te krijgen
 3. PAS DAARNA deze tool gebruiken met de juiste veldnamen
 
-⚠️ KRITIEK - JSONB SYNTAX IS VERPLICHT:
+KRITIEK - JSONB SYNTAX IS VERPLICHT:
 Alle velden zitten in de 'data' JSONB kolom. Je MOET de JSONB operators gebruiken:
 
-❌ FOUT: SELECT naam, lat FROM stadslandbouw
-✓ GOED: SELECT data->>'naam' as naam, (data->>'lat')::float as lat FROM stadslandbouw
+FOUT: SELECT naam, lat FROM stadslandbouw
+GOED: SELECT data->>'naam' as naam, (data->>'lat')::float as lat FROM stadslandbouw
 
 JSONB operators:
 - data->>'veldnaam' voor tekst (dubbele pijl >>)
@@ -369,19 +369,19 @@ JSONB operators:
 - (data->>'veld')::int voor hele getallen
 - data->'veld' voor JSON objecten (enkele pijl >)
 
-⚠️ STRING CONCATENATIE - Gebruik CONCAT(), NIET ||:
-❌ FOUT: 'Prefix: '||data->>'veld' (veroorzaakt JSON parse error)
-✓ GOED: CONCAT('Prefix: ', data->>'veld')
+STRING CONCATENATIE - Gebruik CONCAT(), NIET ||:
+FOUT: 'Prefix: '||data->>'veld' (veroorzaakt JSON parse error)
+GOED: CONCAT('Prefix: ', data->>'veld')
 
 Query voorbeelden:
 - Tellen: SELECT COUNT(*) FROM stadslandbouw
 - Filteren: SELECT data->>'naam' FROM stadslandbouw WHERE data->>'status' = 'Actief'
 - Sorteren: SELECT data->>'naam', (data->>'oppervlakte')::int as opp FROM stadslandbouw ORDER BY opp DESC
 
-⚠️ CTE BEPERKINGEN - Datasets zijn CTEs, geen echte tabellen:
-- ❌ TABLESAMPLE werkt NIET: SELECT * FROM bomen TABLESAMPLE SYSTEM (10)
-- ✓ Gebruik ORDER BY RANDOM() LIMIT n voor sampling: SELECT * FROM bomen ORDER BY RANDOM() LIMIT 100
-- ✓ Of gebruik WHERE met RANDOM(): SELECT * FROM bomen WHERE RANDOM() < 0.01
+CTE BEPERKINGEN - Datasets zijn CTEs, geen echte tabellen:
+- FOUT: TABLESAMPLE werkt NIET: SELECT * FROM bomen TABLESAMPLE SYSTEM (10)
+- GOED: Gebruik ORDER BY RANDOM() LIMIT n voor sampling: SELECT * FROM bomen ORDER BY RANDOM() LIMIT 100
+- GOED: Of gebruik WHERE met RANDOM(): SELECT * FROM bomen WHERE RANDOM() < 0.01
 
 BELANGRIJK:
 - Veldnamen zijn CASE-SENSITIVE

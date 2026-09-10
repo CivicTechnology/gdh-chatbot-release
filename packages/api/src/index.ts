@@ -5,13 +5,13 @@ const app = createApp();
 
 const server = app.listen(config.port, "0.0.0.0", () => {
   console.log(`
-🚀 GDH Chatbot API Server
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+GDH Chatbot API Server
+------------------------------------
 Environment:  ${config.isDevelopment ? "Development" : "Production"}
 Server:       http://localhost:${config.port}
 Health:       http://localhost:${config.port}/api/health
 Frontend:     ${config.frontend.url}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+------------------------------------
   `);
 });
 

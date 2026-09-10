@@ -20,13 +20,22 @@ datasource db {
 /// Each user can have multiple chat sessions and active sessions.
 model User {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email     String   @unique @db.VarChar(64)
+  email     String   @unique @db.VarChar(320)
   password  String?  @db.VarChar(255)
+  role      String   @default("user") @db.VarChar(32)
+  entraOid  String?  @unique @db.Uuid
+  totpSecret     String?
+  mfaEnabled     Boolean  @default(false)
+  mfaBackupCodes String[] @default([])
+  lastTotpTimeStep Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  chats    Chat[]
-  sessions Session[]
+  chats                 Chat[]
+  sessions              Session[]
+  subsidieRegelingen    SubsidieRegeling[]            @relation("SubsidieRegelingCreatedBy")
+  subsidiePublicaties   SubsidieRegelingVersie[]      @relation("SubsidieRegelingVersieGepubliceerdDoor")
+  subsidieAuditEvents   SubsidieRegelingAuditEvent[]  @relation("SubsidieRegelingAuditUser")
 
   @@map("User")
 }
@@ -70,10 +79,11 @@ model Chat {
   lastContext Json?
   updatedAt   DateTime?      @default(now()) @updatedAt
 
-  user     User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages Message[]
   votes    Vote[]
   streams  Stream[]
+  feedback MessageFeedback[]
 
   @@index([userId], name: "Chat_userId_idx")
   @@index([sessionId], name: "Chat_sessionId_idx")
@@ -91,8 +101,9 @@ model Message {
   attachments Json
   createdAt   DateTime
 
-  chat  Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  votes Vote[]
+  chat     Chat              @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  votes    Vote[]
+  feedback MessageFeedback[]
 
   @@index([chatId], name: "Message_v2_chatId_idx")
   @@map("Message_v2")
@@ -110,6 +121,32 @@ model Vote {
 
   @@id([chatId, messageId])
   @@map("Vote_v2")
+}
+
+/// MessageFeedback - gebruikersfeedback op assistent-berichten.
+/// Vervangt Vote_v2 als bron voor de duim-status
+/// in de chat-UI en voedt de feedbackpagina in het beheerportaal.
+/// Eén rij per (chat, bericht); een nieuwe duim of toelichting upsert de rij.
+model MessageFeedback {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  chatId     String   @db.Uuid
+  messageId  String   @db.Uuid
+  isUpvoted  Boolean
+  /// Optionele toelichting van de gebruiker bij de beoordeling.
+  comment    String?
+  /// Gebruiker deelt het volledige gesprek met beheerders. Zonder deze vlag
+  /// zien beheerders alleen de vraag + het beoordeelde antwoord.
+  chatShared Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  chat    Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@unique([chatId, messageId], name: "MessageFeedback_chatId_messageId_unique")
+  @@index([createdAt], name: "MessageFeedback_createdAt_idx")
+  @@index([isUpvoted, createdAt], name: "MessageFeedback_isUpvoted_createdAt_idx")
+  @@map("MessageFeedback")
 }
 
 /// Stream table - tracks active streaming responses for chats.
@@ -234,6 +271,160 @@ model CkanRecord {
 
   @@index([datasetId], name: "CkanRecord_datasetId_idx")
   @@map("CkanRecord")
+}
+
+// ============================================================================
+// Subsidieregelingen (beheerportaal + zoektool)
+// ============================================================================
+
+enum SubsidieStatus {
+  CONCEPT
+  ACTIEF
+  GEARCHIVEERD
+  GEARCHIVEERD_VERVANGEN
+  VERLOPEN
+}
+
+enum SubsidieBronType {
+  LOKALEREGELGEVING
+  PDF
+  OVERIG
+}
+
+enum SubsidieDoelgroepCluster {
+  PARTICULIER
+  BEDRIJF
+  MAATSCHAPPELIJK
+}
+
+enum SubsidieAuditActie {
+  CREATE
+  UPDATE
+  PUBLISH
+  PUBLISH_FAILED
+  ARCHIVE
+  UNARCHIVE
+  REPLACE
+  EXPIRE
+  DEAD_LINK
+  DEAD_LINK_RESOLVED
+}
+
+/// SubsidieRegeling - centrale tabel voor subsidieregelingen die in de zoektool
+/// en het beheerportaal van het KID-platform worden ontsloten.
+/// Opgezet voor de Stadmakers-subsidieregelingen.
+model SubsidieRegeling {
+  id                     String                       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  naam                   String
+  doel                   String
+  voorwaarden            String
+  aanvraagprocedure      String
+  looptijdStart          DateTime?
+  looptijdEind           DateTime?
+  maxBedragAanvrager     Decimal?                     @db.Decimal(12, 2)
+  totaalSubsidiePlafond  Decimal?                     @db.Decimal(14, 2)
+  /// Optionele staffeling van bedragen per doelgroep wanneer één regeling
+  /// verschillende plafonds/maxbedragen kent (bv. particulier max 750, stichting
+  /// hoger). Leeg/null = één bedrag, dan gelden maxBedragAanvrager +
+  /// totaalSubsidiePlafond. Vorm: array van
+  /// { doelgroepCluster, doelgroepNaam?, maxBedragAanvrager?, totaalSubsidiePlafond?, omschrijving? }.
+  plafonds               Json?
+  vervaldatum            DateTime?
+  /// Datum van officiële bekendmaking (dcterms.issued uit de overheid.nl SRU/CVDR-feed).
+  publicatieDatum        DateTime?
+  /// Wanneer de regeling inhoudelijk laatst wijzigde bij de bron. Alleen gezet
+  /// bij een cvdrVersieId-wissel; metadata-fixes op overheid.nl schuiven deze niet op.
+  bronGewijzigdOp        DateTime?
+  /// Laatste succesvolle controle tegen de overheid.nl-feed (elke sync-run, ook zonder wijziging).
+  bronGecontroleerdOp    DateTime?
+  /// Wettelijke grondslag (dcterms.source), bv. "Algemene subsidieverordening Den Haag 2020".
+  grondslag              String?
+  grondslagUrl           String?
+  /// Kenmerk + link van de officiële bekendmaking in het Gemeenteblad (dcterms.isFormatOf).
+  bekendmakingKenmerk    String?
+  bekendmakingUrl        String?
+  /// Aard van de huidige versie volgens CVDR, bv. "nieuwe regeling" of "art. 3 gewijzigd".
+  betreft                String?
+  /// Intern kenmerk van de gemeente, vaak een RIS-nummer (raadsinformatie).
+  kenmerk                String?
+  /// Themacategorie uit de overheid-taxonomie, bv. "maatschappelijke zorg en welzijn".
+  thema                  String?
+  /// Vaststellend bestuursorgaan, bv. "college van burgemeester en wethouders".
+  vastgesteldDoor        String?
+  /// Datum tot wanneer de regeling met terugwerkende kracht geldt.
+  terugwerkendeKrachtTot DateTime?
+  /// Verwijzing naar externe bijlage(n) in de bron (exb-id's).
+  externeBijlage         String?
+  bronUrl                String
+  bronType               SubsidieBronType             @default(LOKALEREGELGEVING)
+  /// CVDR-versie-id (bv. "CVDR123456_4") van de laatst verwerkte SRU-record.
+  /// Gebruikt om in "update"-sync onveranderde regelingen over te slaan.
+  cvdrVersieId           String?                      @db.VarChar(128)
+  status                 SubsidieStatus               @default(CONCEPT)
+  doelgroepNaam          String
+  doelgroepCluster       SubsidieDoelgroepCluster
+  vervangenDoorId        String?                      @db.Uuid
+  /// Embedding van de regeling-samenvatting voor RAG-retrieval via searchSubsidies.
+  /// Wordt herberekend bij elke publicatie; NULL zolang regeling CONCEPT is.
+  embedding              Unsupported("vector(1536)")?
+  embeddingModel         String?                      @db.VarChar(64)
+  embeddedAt             DateTime?
+  lastDeadLinkCheckAt    DateTime?
+  /// Tijdstip waarop de bronlink voor het eerst onbereikbaar was; NULL als de link werkt.
+  deadLinkSince          DateTime?
+  createdByUserId        String?                      @db.Uuid
+  createdAt              DateTime                     @default(now())
+  updatedAt              DateTime                     @default(now()) @updatedAt
+
+  createdBy        User?                          @relation("SubsidieRegelingCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  vervangenDoor    SubsidieRegeling?              @relation("SubsidieRegelingVervangenDoor", fields: [vervangenDoorId], references: [id], onDelete: SetNull)
+  vervangenDoorMij SubsidieRegeling[]             @relation("SubsidieRegelingVervangenDoor")
+  versies          SubsidieRegelingVersie[]
+  auditEvents      SubsidieRegelingAuditEvent[]
+
+  @@index([status], name: "SubsidieRegeling_status_idx")
+  @@index([vervaldatum], name: "SubsidieRegeling_vervaldatum_idx")
+  @@index([doelgroepCluster], name: "SubsidieRegeling_doelgroepCluster_idx")
+  @@map("SubsidieRegeling")
+}
+
+/// SubsidieRegelingVersie - snapshot van de inhoudelijke velden van een regeling
+/// op het moment van publicatie. Oude versies zijn read-only.
+model SubsidieRegelingVersie {
+  id                       String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  regelingId               String   @db.Uuid
+  versienummer             Int
+  /// Snapshot van alle inhoudelijke + metadata-velden uit de regeling op het publish-moment.
+  payload                  Json
+  gepubliceerdOp           DateTime @default(now())
+  gepubliceerdDoorUserId   String?  @db.Uuid
+
+  regeling           SubsidieRegeling @relation(fields: [regelingId], references: [id], onDelete: Cascade)
+  gepubliceerdDoor   User?            @relation("SubsidieRegelingVersieGepubliceerdDoor", fields: [gepubliceerdDoorUserId], references: [id], onDelete: SetNull)
+
+  @@unique([regelingId, versienummer], name: "SubsidieRegelingVersie_regelingId_versienummer_unique")
+  @@index([regelingId], name: "SubsidieRegelingVersie_regelingId_idx")
+  @@map("SubsidieRegelingVersie")
+}
+
+/// SubsidieRegelingAuditEvent - logboek van alle handelingen op een regeling.
+/// Voedt de versie-tab in de beheeromgeving en de "wie heeft wat wanneer"-vraag.
+model SubsidieRegelingAuditEvent {
+  id          String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  regelingId  String              @db.Uuid
+  userId      String?             @db.Uuid
+  actie       SubsidieAuditActie
+  /// Optionele diff/payload-context (bv. veranderde velden, bron-URL bij DEAD_LINK).
+  diff        Json?
+  message     String?
+  createdAt   DateTime            @default(now())
+
+  regeling SubsidieRegeling @relation(fields: [regelingId], references: [id], onDelete: Cascade)
+  user     User?            @relation("SubsidieRegelingAuditUser", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([regelingId], name: "SubsidieRegelingAuditEvent_regelingId_idx")
+  @@index([createdAt], name: "SubsidieRegelingAuditEvent_createdAt_idx")
+  @@map("SubsidieRegelingAuditEvent")
 }
 
 // ============================================================================
