@@ -33,6 +33,8 @@ function isRetryableError(error: unknown): boolean {
  * Creates a fetch function with retry logic and timeout
  */
 function createFetchWithRetry(): typeof fetch {
+  const provider = (process.env.AI_PROVIDER ?? "azure").toLowerCase() === "openai" ? "OpenAI" : "Azure";
+
   return async (input, init) => {
     let lastError: Error | null = null;
 
@@ -58,7 +60,7 @@ function createFetchWithRetry(): typeof fetch {
         ) {
           const delay = API_CONFIG.baseDelayMs * 2 ** attempt;
           console.warn(
-            `[OpenAI] Retryable status ${response.status}, attempt ${attempt + 1}/${API_CONFIG.maxRetries + 1}, waiting ${delay}ms`,
+            `[${provider}] Retryable status ${response.status}, attempt ${attempt + 1}/${API_CONFIG.maxRetries + 1}, waiting ${delay}ms`,
           );
           await new Promise((resolve) => setTimeout(resolve, delay));
           continue;
@@ -72,10 +74,10 @@ function createFetchWithRetry(): typeof fetch {
         // Handle timeout
         if (lastError.name === "AbortError") {
           console.error(
-            `[OpenAI] Request timed out after ${API_CONFIG.timeoutMs}ms`,
+            `[${provider}] Request timed out after ${API_CONFIG.timeoutMs}ms`,
           );
           throw new Error(
-            `OpenAI API request timed out after ${API_CONFIG.timeoutMs / 1000} seconds`,
+            `${provider} API request timed out after ${API_CONFIG.timeoutMs / 1000} seconds`,
           );
         }
 
@@ -83,7 +85,7 @@ function createFetchWithRetry(): typeof fetch {
         if (isRetryableError(error) && attempt < API_CONFIG.maxRetries) {
           const delay = API_CONFIG.baseDelayMs * 2 ** attempt;
           console.warn(
-            `[OpenAI] Retryable error: ${lastError.message}, attempt ${attempt + 1}/${API_CONFIG.maxRetries + 1}, waiting ${delay}ms`,
+            `[${provider}] Retryable error: ${lastError.message}, attempt ${attempt + 1}/${API_CONFIG.maxRetries + 1}, waiting ${delay}ms`,
           );
           await new Promise((resolve) => setTimeout(resolve, delay));
           continue;
