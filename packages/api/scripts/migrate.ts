@@ -1,7 +1,7 @@
 /**
  * Migration Script
  *
- * Runs Prisma migrations with proper handling for Neon serverless.
+ * Runs Prisma migrations against the configured PostgreSQL database.
  * The direct connection URL is configured in prisma.config.ts.
  *
  * Always runs the baseline SQL first (idempotent with IF NOT EXISTS),

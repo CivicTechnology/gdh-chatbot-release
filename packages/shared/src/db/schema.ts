@@ -9,6 +9,7 @@ export type {
 	Chat as GdhGesprek,
 	Message as GdhBericht,
 	Vote as GdhStem,
+	MessageFeedback as GdhBerichtFeedback,
 	Stream as GdhStream,
 	DocumentSource as GdhDocumentBron,
 	DocumentChunk as GdhKennisbankFragment,

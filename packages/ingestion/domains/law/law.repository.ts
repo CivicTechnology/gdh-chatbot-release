@@ -3,7 +3,7 @@
  * Database operations for DocumentSource and DocumentChunk
  */
 
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "@gdh-chatbot/api/prisma";
 import { prisma } from "../../lib/prisma.js";
 
 export type DocumentSourceInput = {

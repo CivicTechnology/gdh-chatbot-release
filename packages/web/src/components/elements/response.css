@@ -29,3 +29,57 @@
   color: var(--primary);
   opacity: 0.8;
 }
+
+/* Tabellen in chat-responses.
+   `display: block` zou de table-layout-engine uitschakelen waardoor kolommen
+   niet meer aligneren. We laten `display: table` staan en gebruiken een
+   `block`-wrapper via `overflow-x: auto` op de parent voor scroll. */
+.response-md {
+  /* Voorkom dat een brede tabel z'n parent oprekt: container scrollt zelf. */
+  overflow-x: auto;
+}
+
+.response-md :where(table) {
+  width: 100%;
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+  border-collapse: collapse;
+  font-size: 0.875em;
+  line-height: 1.4;
+  table-layout: auto;
+}
+
+.response-md :where(thead) {
+  border-bottom: 1px solid var(--border);
+}
+
+.response-md :where(th) {
+  font-weight: 600;
+  text-align: left;
+  vertical-align: bottom;
+  padding: 0.5em 0.75em;
+  color: var(--foreground);
+}
+
+.response-md :where(tbody tr) {
+  border-bottom: 1px solid var(--border);
+}
+
+.response-md :where(tbody tr:last-child) {
+  border-bottom: 0;
+}
+
+.response-md :where(td) {
+  vertical-align: top;
+  padding: 0.5em 0.75em;
+}
+
+/* Eerste/laatste cel: geen extra horizontale padding zodat de tabel mooi
+   uitlijnt op de tekstrand. */
+.response-md :where(th:first-child, td:first-child) {
+  padding-left: 0;
+}
+
+.response-md :where(th:last-child, td:last-child) {
+  padding-right: 0;
+}

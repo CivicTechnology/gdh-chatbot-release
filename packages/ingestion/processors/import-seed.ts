@@ -3,12 +3,12 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { gunzip } from "node:zlib";
-import { Prisma } from "@gdh-chatbot/api/prisma";
-import type {
-  DocumentChunk,
-  DocumentEmbedding,
-  DocumentSource,
-} from "@gdh-chatbot/shared/db";
+import {
+  type DocumentChunk,
+  type DocumentEmbedding,
+  type DocumentSource,
+  Prisma,
+} from "@gdh-chatbot/api/prisma";
 import { loadEnv } from "../lib/load-env.js";
 import { disconnectPrisma, prisma } from "../lib/prisma.js";
 

@@ -10,16 +10,15 @@ import { ChatHeader } from "@/components/chat-header";
 import { useLocalChats } from "@/contexts/local-chat-context";
 import { useAutoResume } from "@/hooks/use-auto-resume";
 import { useChatVisibility } from "@/hooks/use-chat-visibility";
-import type { Vote } from "@/lib/db/schema";
+import type { MessageFeedback } from "@/lib/db/schema";
 import { ChatSDKError } from "@/lib/errors";
-import type { Attachment, ChatMessage } from "@/lib/types";
+import type { Attachment, ChatMessage, VisibilityType } from "@/lib/types";
 import type { AppUsage } from "@/lib/usage";
 import { fetcher, fetchWithErrorHandlers, generateUUID } from "@/lib/utils";
 import { Messages } from "./messages";
 import { MultimodalInput } from "./multimodal-input";
 import { getChatHistoryPaginationKey } from "./sidebar-history";
 import { toast } from "./toast";
-import type { VisibilityType } from "./visibility-selector";
 
 export function Chat({
   id,
@@ -140,8 +139,8 @@ export function Chat({
     }
   }, [query, sendMessage, hasAppendedQuery, id]);
 
-  const { data: votes } = useSWR<Vote[]>(
-    messages.length >= 2 ? `/api/vote?chatId=${id}` : null,
+  const { data: feedback } = useSWR<MessageFeedback[]>(
+    messages.length >= 2 ? `/api/feedback?chatId=${id}` : null,
     fetcher
   );
 
@@ -168,10 +167,11 @@ export function Chat({
           messages={messages}
           regenerate={regenerate}
           selectedModelId={initialChatModel}
+          sendMessage={sendMessage}
           setMessages={setMessages}
           status={status}
           toolsSummary={toolsSummary}
-          votes={votes}
+          feedback={feedback}
         />
 
         <div className="sticky bottom-0 z-1 mx-auto flex w-full max-w-4xl gap-2 border-t-0 bg-background px-2 pb-3 md:px-4 md:pb-4">
@@ -196,7 +196,6 @@ export function Chat({
         </div>
       </div>
       {/* Artifact pane disabled */}
-      {/* Removed AI Gateway credit card alert for a provider-agnostic UI */}
     </>
   );
 }

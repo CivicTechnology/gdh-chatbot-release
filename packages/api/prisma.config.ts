@@ -9,9 +9,7 @@ if (!process.env.CI) {
 }
 
 // Prisma CLI (migrations, introspection) needs a direct connection, not pooled.
-// Neon pooled: ep-xxx-pooler.region.aws.neon.tech
-// Neon direct: ep-xxx.region.aws.neon.tech
-// See: https://neon.com/docs/guides/prisma
+// Strip a "-pooler." host segment (PgBouncer-style pooled endpoints) if present.
 const pooledUrl = process.env.POSTGRES_URL ?? "";
 const directUrl = pooledUrl.replace("-pooler.", ".");
 

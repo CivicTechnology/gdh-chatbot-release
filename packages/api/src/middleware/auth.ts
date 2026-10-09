@@ -1,6 +1,7 @@
 // Re-export from the auth domain for backward compatibility
 export {
 	requireAuth,
+	requireBeheerder,
 	optionalAuth,
 	setSessionCookie,
 	clearSessionCookie,

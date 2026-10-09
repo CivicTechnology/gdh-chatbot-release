@@ -1,4 +1,3 @@
-import { config } from "@/config/index.js";
 
 export type ErrorType =
   | "bad_request"
@@ -74,12 +73,12 @@ export class ChatSDKError extends Error {
       };
     }
 
-    // Only include cause in development
-    if (config.isDevelopment && cause) {
-      return { code, message, cause, statusCode };
-    }
-
-    return { code, message, statusCode };
+    return {
+      code,
+      message,
+      cause: typeof cause === "string" ? cause : undefined,
+      statusCode,
+    };
   }
 }
 

@@ -1,6 +1,8 @@
 import { createHash } from "node:crypto";
 import { compareSync } from "bcrypt-ts";
 import { sessionConfig } from "@gdh-chatbot/shared";
+import { config } from "@/config/index.js";
+import { sealJson } from "@/lib/crypto/secure.js";
 import { generateUUID } from "@/lib/utils.js";
 import * as authRepository from "./auth.repository.js";
 import type { AuthUser, SignInInput, SignUpInput } from "./auth.types.js";
@@ -11,23 +13,34 @@ export function hashToken(token: string): string {
 	return createHash("sha256").update(token).digest("hex");
 }
 
-export async function signIn({ email, password }: SignInInput): Promise<{ user: AuthUser; token: string }> {
+const MFA_TOKEN_TTL_MS = 5 * 60 * 1000;
+const ENROLL_TOKEN_TTL_MS = 10 * 60 * 1000;
+
+export type SignInResult =
+	| { kind: "session"; user: AuthUser; token: string }
+	| { kind: "mfa"; mfaToken: string }
+	| { kind: "enroll"; enrollToken: string };
+
+export async function signIn({ email, password }: SignInInput): Promise<SignInResult> {
+	// design: lokale login default uit (break-glass).
+	if (!config.localLogin.enabled) {
+		throw new Error("Invalid credentials");
+	}
+
 	const user = await authRepository.findUserByEmail(email);
 	if (!user || !user.password) {
 		throw new Error("Invalid credentials");
 	}
-
-	const isValidPassword = compareSync(password, user.password);
-	if (!isValidPassword) {
+	if (!compareSync(password, user.password)) {
 		throw new Error("Invalid credentials");
 	}
 
-	const token = await createAuthSession(user.id);
-
-	return {
-		user: { id: user.id, email: user.email, type: "regular" },
-		token,
-	};
+	// MFA verplicht voor lokale login.
+	if (user.mfaEnabled) {
+		return { kind: "mfa", mfaToken: sealJson({ userId: user.id }, MFA_TOKEN_TTL_MS) };
+	}
+	// Nog niet ingeschreven → forceer enrollment voor we een sessie geven.
+	return { kind: "enroll", enrollToken: sealJson({ userId: user.id, enroll: true }, ENROLL_TOKEN_TTL_MS) };
 }
 
 export async function signUp({ email, password }: SignUpInput): Promise<{ user: AuthUser; token: string }> {
@@ -44,7 +57,7 @@ export async function signUp({ email, password }: SignUpInput): Promise<{ user: 
 	const token = await createAuthSession(user.id);
 
 	return {
-		user: { id: user.id, email: user.email, type: "regular" },
+		user: { id: user.id, email: user.email, type: "regular", role: user.role },
 		token,
 	};
 }
@@ -58,16 +71,15 @@ export async function signOut(token: string): Promise<void> {
 	}
 }
 
-export async function createAuthSession(userId: string): Promise<string> {
+export async function createAuthSession(
+	userId: string,
+	maxAgeMs: number = SESSION_MAX_AGE,
+): Promise<string> {
 	const token = generateUUID();
 	const tokenHash = hashToken(token);
-	const expiresAt = new Date(Date.now() + SESSION_MAX_AGE);
+	const expiresAt = new Date(Date.now() + maxAgeMs);
 
-	await authRepository.createSession({
-		token: tokenHash,
-		userId,
-		expiresAt,
-	});
+	await authRepository.createSession({ token: tokenHash, userId, expiresAt });
 
 	return token;
 }

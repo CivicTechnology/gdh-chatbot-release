@@ -14,6 +14,7 @@ export function useMessages({
     isAtBottom,
     isSticky,
     scrollToBottom,
+    stopSticky,
     onViewportEnter,
     onViewportLeave,
   } = useScrollToBottom();
@@ -32,6 +33,7 @@ export function useMessages({
     isAtBottom,
     isSticky,
     scrollToBottom,
+    stopSticky,
     onViewportEnter,
     onViewportLeave,
     hasSentMessage,

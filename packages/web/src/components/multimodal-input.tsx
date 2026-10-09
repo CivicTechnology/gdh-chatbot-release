@@ -13,7 +13,7 @@ import {
 } from "react";
 import { toast } from "sonner";
 import { useLocalStorage, useWindowSize } from "usehooks-ts";
-import type { Attachment, ChatMessage } from "@/lib/types";
+import type { Attachment, ChatMessage, VisibilityType } from "@/lib/types";
 import type { AppUsage } from "@/lib/usage";
 import { cn } from "@/lib/utils";
 import {
@@ -26,7 +26,9 @@ import {
 import { ArrowUpIcon, StopIcon } from "./icons";
 import { SuggestedActions } from "./suggested-actions";
 import { Button } from "./ui/button";
-import type { VisibilityType } from "./visibility-selector";
+
+const INVOER_PLACEHOLDER = "Stel uw vraag...";
+const INVOER_LABEL = "Stel uw vraag over subsidies van gemeente Den Haag";
 
 function PureMultimodalInput({
   chatId,
@@ -161,6 +163,7 @@ function PureMultimodalInput({
         {/* Attachments UI removed */}
         <div className="flex flex-row items-start gap-1 sm:gap-2">
           <PromptInputTextarea
+            aria-label={INVOER_LABEL}
             autoFocus
             className="grow resize-none border-0! border-none! bg-transparent p-2 text-sm outline-none ring-0 [-ms-overflow-style:none] [scrollbar-width:none] placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 [&::-webkit-scrollbar]:hidden"
             data-testid="multimodal-input"
@@ -168,7 +171,7 @@ function PureMultimodalInput({
             maxHeight={200}
             minHeight={44}
             onChange={handleInput}
-            placeholder="Stuur een bericht..."
+            placeholder={INVOER_PLACEHOLDER}
             ref={textareaRef}
             rows={1}
             value={input}

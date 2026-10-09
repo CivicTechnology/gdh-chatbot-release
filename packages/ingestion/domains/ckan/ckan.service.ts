@@ -157,17 +157,18 @@ async function syncSingleDataset(
 
 		await ckanRepository.deleteRecordsByDatasetId(datasetId);
 
-		const rows = records.map((record) => ({
-			datasetId,
-			data: record,
-			geometry: buildGeometry(record),
-		}));
-
+		// Bouw de insert-rijen per batch i.p.v. eerst de volledige rows-array op te
+		// bouwen: zo staan er nooit meer dan BATCH_SIZE geometry-strings tegelijk in
+		// geheugen. Scheelt bij grote datasets een tweede volledige kopie.
 		const BATCH_SIZE = ingestionConfig.database.batchSize;
-		const batches = chunk(rows, BATCH_SIZE);
 
-		for (const batch of batches) {
-			await ckanRepository.bulkInsertRecordsWithGeometry(batch);
+		for (const recordBatch of chunk(records, BATCH_SIZE)) {
+			const rows = recordBatch.map((record) => ({
+				datasetId,
+				data: record,
+				geometry: buildGeometry(record),
+			}));
+			await ckanRepository.bulkInsertRecordsWithGeometry(rows);
 		}
 
 		console.log(`${prefix} ✓ ${dataset.name} (${records.length} records)`);

@@ -4,6 +4,9 @@ import { Router } from "express";
 import { authRouter } from "@/domains/auth/index.js";
 import { chatRouter, historyRouter } from "@/domains/chat/index.js";
 import { messageRouter } from "@/domains/message/index.js";
+import { cvdrSyncRouter } from "@/domains/cvdr-sync/cvdr-sync.routes.js";
+import { adminFeedbackRouter, feedbackRouter } from "@/domains/feedback/index.js";
+import { subsidieRegelingRouter } from "@/domains/subsidieregeling/index.js";
 import { voteRouter } from "@/domains/vote/index.js";
 
 // Legacy routes (not yet migrated to domains)
@@ -20,6 +23,10 @@ router.use("/chat", chatRouter);
 router.use("/history", historyRouter);
 router.use("/messages", messageRouter);
 router.use("/vote", voteRouter);
+router.use("/feedback", feedbackRouter);
+router.use("/admin/feedback", adminFeedbackRouter);
+router.use("/admin/subsidieregelingen", subsidieRegelingRouter);
+router.use("/admin/cvdr-sync", cvdrSyncRouter);
 
 // Legacy routes (files, retrieval, map, table)
 router.use("/files", filesRoutes);

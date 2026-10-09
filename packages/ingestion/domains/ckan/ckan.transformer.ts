@@ -1,11 +1,7 @@
 import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
 import { point } from "@turf/helpers";
 import proj4 from "proj4";
-import {
-	haalGdhDatasetSchemaOp,
-	converteerNaarJsonSchema,
-	GDH_GEO_LOOKUP_DATASETS,
-} from "./gdh-dataportaal-schemas.js";
+import { GDH_GEO_LOOKUP_DATASETS, GDH_GEO_NAME_FIELD } from "./gdh-dataportaal-schemas.js";
 
 // EPSG:28992 - Rijksdriehoekscoördinaten (RD New)
 const RD_NEW =
@@ -152,7 +148,7 @@ function extractGeometryCollection(
 ): GeometryCollectionResult | null {
 	if (!geometry || geometry.type !== "GeometryCollection") return null;
 
-	const geomCollection = geometry as {
+	const geomCollection = geometry as unknown as {
 		type: string;
 		geometries: Array<{ type: string; coordinates: unknown }>;
 	};
@@ -257,9 +253,9 @@ function enrichWithGeoData(
 			return item;
 		}
 
-		const stadsdeel = findGeoMatch(x, y, geoLookup.stadsdelen, "STADSDEELNAAM");
-		const wijk = findGeoMatch(x, y, geoLookup.wijken, "WIJKNAAM");
-		const buurt = findGeoMatch(x, y, geoLookup.buurten, "BUURTNAAM");
+		const stadsdeel = findGeoMatch(x, y, geoLookup.stadsdelen, GDH_GEO_NAME_FIELD.stadsdelen);
+		const wijk = findGeoMatch(x, y, geoLookup.wijken, GDH_GEO_NAME_FIELD.wijken);
+		const buurt = findGeoMatch(x, y, geoLookup.buurten, GDH_GEO_NAME_FIELD.buurten);
 
 		const needsLatLng = !("lat" in item) || !("lng" in item);
 		const latLng = needsLatLng ? rdToWgs84(x, y) : {};
@@ -281,10 +277,8 @@ export function haalGdhSchemaOp(
 	data: Record<string, unknown>[],
 	name: string,
 ): Record<string, unknown> {
-	const gdhSchema = haalGdhDatasetSchemaOp(name);
-	if (gdhSchema) {
-		return converteerNaarJsonSchema(gdhSchema);
-	}
+	// Schemas are inferred from the actual OpenDataSoft data so field names and
+	// types always match the source (ODS renamed fields vs the old CKAN portal).
 	return infereerDynamischSchema(data, name);
 }
 

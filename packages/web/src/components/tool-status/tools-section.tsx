@@ -1,6 +1,16 @@
+import type { UseChatHelpers } from "@ai-sdk/react";
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { ChatMessage } from "@/lib/types";
 import { MapView, type MapViewProps } from "../elements/map-view";
+import {
+  SubsidieComparison,
+  type SubsidieComparisonOutput,
+} from "../elements/subsidie-comparison";
+import {
+  SubsidieEligibility,
+  type SubsidieEligibilityOutput,
+} from "../elements/subsidie-eligibility";
 import { TableView } from "../elements/table-view";
 import type { ToolType } from "../tool-card/tool-config";
 import { toolConfig } from "../tool-card/tool-config";
@@ -23,6 +33,8 @@ type ToolPartInput = {
 type ToolsSectionProps = {
   parts: ToolPartInput[];
   toolsSummary: string | null;
+  sendMessage: UseChatHelpers<ChatMessage>["sendMessage"];
+  status: UseChatHelpers<ChatMessage>["status"];
 };
 
 // Type definitions for tool outputs
@@ -96,6 +108,8 @@ const VISUAL_TOOL_TYPES = new Set([
   "tool-getWeather",
   "tool-showMap",
   "tool-showTable",
+  "tool-checkSubsidieEligibility",
+  "tool-compareSubsidies",
 ]);
 
 // A group of tools that ends with an optional visual output
@@ -109,7 +123,12 @@ type ToolGroup = {
  * Each visual output (map, table, weather) ends its section,
  * so multiple visuals result in multiple sections.
  */
-export function ToolsSection({ parts, toolsSummary }: ToolsSectionProps) {
+export function ToolsSection({
+  parts,
+  toolsSummary,
+  sendMessage,
+  status,
+}: ToolsSectionProps) {
   // Group tools into sections, splitting when a visual output is encountered
   const toolGroups = useMemo(() => {
     const groups: ToolGroup[] = [];
@@ -146,6 +165,24 @@ export function ToolsSection({ parts, toolsSummary }: ToolsSectionProps) {
           visualOutput = <MapVisual key={part.toolCallId} part={part} />;
         } else if (type === "tool-showTable") {
           visualOutput = <TableVisual key={part.toolCallId} part={part} />;
+        } else if (type === "tool-checkSubsidieEligibility") {
+          visualOutput = (
+            <EligibilityVisual
+              key={part.toolCallId}
+              part={part}
+              sendMessage={sendMessage}
+              status={status}
+            />
+          );
+        } else if (type === "tool-compareSubsidies") {
+          visualOutput = (
+            <ComparisonVisual
+              key={part.toolCallId}
+              part={part}
+              sendMessage={sendMessage}
+              status={status}
+            />
+          );
         }
 
         groups.push({
@@ -165,14 +202,14 @@ export function ToolsSection({ parts, toolsSummary }: ToolsSectionProps) {
     }
 
     return groups;
-  }, [parts]);
+  }, [parts, sendMessage, status]);
 
   if (toolGroups.length === 0) {
     return null;
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-4">
       {toolGroups.map((group, index) => {
         // Only pass summary to the last group
         const isLastGroup = index === toolGroups.length - 1;
@@ -324,6 +361,74 @@ function MapVisual({ part }: { part: ToolPartInput }) {
       polygons={stableMapProps.polygons}
       title={stableMapProps.title}
       zoom={stableMapProps.zoom}
+    />
+  );
+}
+
+// Guards "Bekijk details" so it only sends a message when the chat is idle.
+// Without this, rapid clicks (or clicks while streaming) fire multiple
+// concurrent user messages and corrupt the chat stream.
+function useBekijkDetails(
+  sendMessage: UseChatHelpers<ChatMessage>["sendMessage"],
+  status: UseChatHelpers<ChatMessage>["status"]
+) {
+  const inFlightRef = useRef(false);
+  useEffect(() => {
+    if (status === "ready") inFlightRef.current = false;
+  }, [status]);
+  return useCallback(
+    (naam: string) => {
+      if (status !== "ready" || inFlightRef.current) return;
+      inFlightRef.current = true;
+      sendMessage({
+        role: "user",
+        parts: [{ type: "text", text: `Vertel me meer over ${naam}` }],
+      });
+    },
+    [sendMessage, status]
+  );
+}
+
+// Eligibility visual output component
+function EligibilityVisual({
+  part,
+  sendMessage,
+  status,
+}: {
+  part: ToolPartInput;
+  sendMessage: UseChatHelpers<ChatMessage>["sendMessage"];
+  status: UseChatHelpers<ChatMessage>["status"];
+}) {
+  const onBekijkDetails = useBekijkDetails(sendMessage, status);
+  const output = part.output as SubsidieEligibilityOutput | undefined;
+  if (part.state !== "output-available" || !output) return null;
+  return (
+    <SubsidieEligibility
+      disabled={status !== "ready"}
+      onBekijkDetails={onBekijkDetails}
+      output={output}
+    />
+  );
+}
+
+// Comparison visual output component
+function ComparisonVisual({
+  part,
+  sendMessage,
+  status,
+}: {
+  part: ToolPartInput;
+  sendMessage: UseChatHelpers<ChatMessage>["sendMessage"];
+  status: UseChatHelpers<ChatMessage>["status"];
+}) {
+  const onBekijkDetails = useBekijkDetails(sendMessage, status);
+  const output = part.output as SubsidieComparisonOutput | undefined;
+  if (part.state !== "output-available" || !output) return null;
+  return (
+    <SubsidieComparison
+      disabled={status !== "ready"}
+      onBekijkDetails={onBekijkDetails}
+      output={output}
     />
   );
 }

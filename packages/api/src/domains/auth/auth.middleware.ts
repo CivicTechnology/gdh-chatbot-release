@@ -6,12 +6,12 @@ import type { AuthenticatedRequest } from "./auth.types.js";
 const SESSION_COOKIE = sessionConfig.cookieName;
 const SESSION_MAX_AGE = sessionConfig.maxAgeMs;
 
-export function setSessionCookie(res: Response, token: string): void {
+export function setSessionCookie(res: Response, token: string, maxAgeMs: number = SESSION_MAX_AGE): void {
 	res.cookie(SESSION_COOKIE, token, {
 		httpOnly: sessionConfig.cookie.httpOnly,
 		secure: isProduction,
 		sameSite: sessionConfig.cookie.sameSite,
-		maxAge: SESSION_MAX_AGE,
+		maxAge: maxAgeMs,
 		path: "/",
 	});
 }
@@ -55,6 +55,7 @@ export async function requireAuth(
 			id: userData.id,
 			email: userData.email,
 			type: "regular",
+			role: userData.role,
 		};
 
 		req.session = {
@@ -68,6 +69,29 @@ export async function requireAuth(
 		console.error("Auth error:", error);
 		res.status(500).json({ error: "internal_error", message: "Auth failed" });
 	}
+}
+
+/**
+ * Beheerder-only middleware. Must run AFTER requireAuth.
+ * Returns 403 when the authenticated user lacks the "beheerder" role.
+ *
+ * De rol staat op User.role in Postgres. Bij Entra ID SSO wordt die bij het
+ * inloggen gezet op basis van de app-role-claim (zie entra.service.ts).
+ */
+export function requireBeheerder(
+	req: AuthenticatedRequest,
+	res: Response,
+	next: NextFunction,
+): void {
+	if (!req.user) {
+		res.status(401).json({ error: "unauthorized", message: "No session" });
+		return;
+	}
+	if (req.user.role !== "beheerder") {
+		res.status(403).json({ error: "forbidden", message: "Beheerder-rol vereist" });
+		return;
+	}
+	next();
 }
 
 /**
@@ -91,6 +115,7 @@ export async function optionalAuth(
 						id: userData.id,
 						email: userData.email,
 						type: "regular",
+						role: userData.role,
 					};
 					req.session = {
 						id: sessionData.id,

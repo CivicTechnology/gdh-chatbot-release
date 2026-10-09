@@ -346,19 +346,26 @@ const MAP_STYLES: Record<MapStyle, maplibregl.StyleSpecification> = {
   street: {
     version: 8,
     sources: {
-      osm: {
+      // CARTO Voyager basemap. OpenStreetMap's eigen tile-servers blokkeren
+      // app-gebruik (403 "Referer is required by tile usage policy"), dus we
+      // gebruiken CARTO net als bij de dark-style. Geen API-key nodig.
+      carto: {
         type: "raster",
-        tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+        tiles: [
+          "https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png",
+          "https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png",
+          "https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png",
+        ],
         tileSize: 256,
         attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
       },
     },
     layers: [
       {
-        id: "osm",
+        id: "carto",
         type: "raster",
-        source: "osm",
+        source: "carto",
       },
     ],
   },
@@ -430,14 +437,6 @@ export const MapView = memo(function MapViewInner({
   const polygons = polygonsProp ?? [];
   const lines = linesProp ?? [];
 
-  // DEBUG: Log what data MapView receives
-  console.log("[MapView] Received props:", {
-    markersCount: markers.length,
-    polygonsCount: polygons.length,
-    linesCount: lines.length,
-    title,
-    firstMarker: markers[0] ?? null,
-  });
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const popupRef = useRef<maplibregl.Popup | null>(null);
@@ -479,10 +478,6 @@ export const MapView = memo(function MapViewInner({
   const [isProcessingData, setIsProcessingData] = useState(false);
 
   useEffect(() => {
-    console.log(
-      "[MapView] useEffect for geojsonData, markers.length:",
-      markers.length
-    );
     if (markers.length === 0) {
       setGeojsonData({ type: "FeatureCollection", features: [] });
       return;
@@ -492,11 +487,6 @@ export const MapView = memo(function MapViewInner({
 
     // Use requestIdleCallback for better performance, fallback to setTimeout
     const processData = () => {
-      console.log(
-        "[MapView] processData running for",
-        markers.length,
-        "markers"
-      );
       const features: GeoJSON.Feature<GeoJSON.Point>[] = markers.map(
         (marker, index) => ({
           type: "Feature",
@@ -604,7 +594,6 @@ export const MapView = memo(function MapViewInner({
       setWebglContextLost(true);
     };
     const handleContextRestored = () => {
-      console.log("[MapView] WebGL context restored, triggering re-render");
       setWebglContextLost(false);
       // Force re-add sources and layers after context restore
       mapInstance.triggerRepaint();
@@ -725,7 +714,6 @@ export const MapView = memo(function MapViewInner({
   useEffect(() => {
     // Skip if context is currently lost
     if (webglContextLost) {
-      console.log("[MapView] Skipping layer setup - WebGL context lost");
       return;
     }
 
@@ -737,7 +725,6 @@ export const MapView = memo(function MapViewInner({
 
     // Wait for geojsonData to be ready before setting up point layers
     if (markers.length > 0 && geojsonData.features.length === 0) {
-      console.log("[MapView] Waiting for geojsonData to be ready...");
       return;
     }
 
@@ -746,15 +733,6 @@ export const MapView = memo(function MapViewInner({
     const setupAllLayers = () => {
       // Double-check style is loaded
       if (!mapInstance.isStyleLoaded()) return;
-
-      console.log(
-        "[MapView] setupAllLayers called, polygons:",
-        polygons.length,
-        "lines:",
-        lines.length,
-        "markers:",
-        markers.length
-      );
 
       // === STEP 1: Add/update polygon layers (bottom) ===
       if (polygons.length > 0) {
@@ -861,8 +839,6 @@ export const MapView = memo(function MapViewInner({
             });
           }
         }
-
-        console.log("[MapView] Polygon layers added");
       }
 
       // === STEP 2: Add/update line layers (middle) ===
@@ -918,8 +894,6 @@ export const MapView = memo(function MapViewInner({
             },
           });
         }
-
-        console.log("[MapView] Line layers added");
       }
 
       // === STEP 3: Add/update point layers (top) ===
@@ -931,15 +905,8 @@ export const MapView = memo(function MapViewInner({
 
         if (existingSource) {
           // Source exists, just update the data
-          console.log(
-            "[MapView] Updating existing point source with",
-            geojsonData.features.length,
-            "features"
-          );
           existingSource.setData(geojsonData);
         } else {
-          console.log("[MapView] Creating new point source and layers");
-
           // Source doesn't exist, create it with layers
           mapInstance.addSource(POINTS_SOURCE, {
             type: "geojson",
@@ -1004,8 +971,6 @@ export const MapView = memo(function MapViewInner({
               "circle-stroke-color": "#ffffff",
             },
           });
-
-          console.log("[MapView] Point layers created successfully");
         }
       }
     };

@@ -337,12 +337,17 @@
 
   body {
     @apply bg-background text-foreground;
-    overflow-x: hidden;
+    /* `overflow-x: clip` voorkomt horizontaal scrollen zonder een scrollende
+       containing block te creëren — `overflow-x: hidden` zou `position:
+       sticky` op descendants breken (sticky zoekt de dichtstbijzijnde
+       scrollende ancestor en zou die op body in plaats van viewport
+       vinden). */
+    overflow-x: clip;
     position: relative;
   }
 
   html {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 }
 
@@ -643,23 +648,6 @@
   animation: shimmer 2s ease-in-out infinite;
 }
 
-/* Tool card icon pulse animation */
-@keyframes tool-pulse {
-  0%,
-  100% {
-    opacity: 0.6;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
-}
-
-.animate-tool-pulse {
-  animation: tool-pulse 1.5s ease-in-out infinite;
-}
-
 /* MapLibre popup styling for dark mode support */
 .maplibregl-popup-content {
   background: var(--popover);
@@ -842,4 +830,39 @@
 .rdg {
   scrollbar-width: auto;
   scrollbar-color: hsl(var(--muted-foreground) / 0.4) hsl(var(--muted) / 0.3);
+}
+
+/* Verberg default browser spinners op number-inputs zodat shadcn/ui Input
+   consistent oogt. Beheerders typen bedragen handmatig in. */
+input[type="number"].no-spinner::-webkit-inner-spin-button,
+input[type="number"].no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+input[type="number"].no-spinner {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* CVDR sync: highlight rijen die net via een sync zijn binnengekomen of geüpdate.
+   Een korte gele "flash" die wegfaadt naar transparant trekt de aandacht zonder
+   blijvend visuele ruis te zijn. */
+@keyframes cvdr-row-flash {
+  0% {
+    background-color: hsl(48 96% 53% / 0.18);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+tr[data-cvdr-fresh="true"] > td {
+  animation: cvdr-row-flash 2.5s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  tr[data-cvdr-fresh="true"] > td {
+    animation: none;
+  }
 }

@@ -1,11 +1,12 @@
 import type { ToolColor } from "@/components/tool-card/tool-config";
 
 export type SuggestionCategory =
-  | "map"
-  | "data"
-  | "policy"
-  | "legal"
-  | "practical";
+  | "ontdekken"
+  | "voorwaarden"
+  | "aanvragen"
+  | "vergelijken"
+  | "deadlines"
+  | "uitleg";
 
 export type Suggestion = {
   text: string;
@@ -19,100 +20,166 @@ export type CategoryConfig = {
 };
 
 export const categories: CategoryConfig[] = [
-  { id: "map", label: "Kaart & Locaties", color: "teal" },
-  { id: "data", label: "Data & Tabellen", color: "green" },
-  { id: "policy", label: "Beleid & Documenten", color: "blue" },
-  { id: "legal", label: "Regelgeving", color: "purple" },
-  { id: "practical", label: "Praktische Info", color: "orange" },
+  { id: "ontdekken", label: "Subsidies vinden", color: "sky" },
+  { id: "voorwaarden", label: "Voorwaarden & bedragen", color: "green" },
+  { id: "aanvragen", label: "Aanvragen", color: "blue" },
+  { id: "vergelijken", label: "Vergelijken", color: "teal" },
+  { id: "deadlines", label: "Deadlines & looptijd", color: "orange" },
+  { id: "uitleg", label: "Uitleg", color: "purple" },
 ];
 
 export const suggestions: Suggestion[] = [
-  // Kaart & Locaties
-  { text: "Toon stadstuinen in Den Haag op de kaart", category: "map" },
-  { text: "Waar zijn de dichtstbijzijnde moestuinen?", category: "map" },
-  { text: "Laat alle voedselbossen zien op een kaart", category: "map" },
-  { text: "Welke parken hebben eetbare planten?", category: "map" },
-  { text: "Toon locaties van voedselbanken in Den Haag", category: "map" },
-  { text: "Waar kan ik groente kopen direct van de boer?", category: "map" },
-  { text: "Kaart met buurttuinen in Laak", category: "map" },
-  { text: "Waar zijn er boomgaarden in de stad?", category: "map" },
-  { text: "Toon plekken voor stadslandbouw", category: "map" },
-  { text: "Welke scholen hebben een schooltuin?", category: "map" },
+  // Subsidies vinden
+  {
+    text: "Welke subsidies zijn er voor bewoners van Den Haag?",
+    category: "ontdekken",
+  },
+  {
+    text: "Welke subsidie past bij mijn idee voor de buurt?",
+    category: "ontdekken",
+  },
+  {
+    text: "Zijn er subsidies voor mijn vereniging of stichting?",
+    category: "ontdekken",
+  },
+  {
+    text: "Welke subsidies zijn er voor ondernemers?",
+    category: "ontdekken",
+  },
+  {
+    text: "Ik wil iets organiseren in mijn wijk, is daar subsidie voor?",
+    category: "ontdekken",
+  },
+  {
+    text: "Welke subsidieregelingen zijn er op dit moment actief?",
+    category: "ontdekken",
+  },
+  {
+    text: "Is er een subsidie voor het verduurzamen van mijn woning?",
+    category: "ontdekken",
+  },
+  {
+    text: "Welke subsidie past bij mijn groene initiatief?",
+    category: "ontdekken",
+  },
 
-  // Data & Tabellen
-  { text: "Hoeveel stadstuinen zijn er in Den Haag?", category: "data" },
+  // Voorwaarden & bedragen
   {
-    text: "Geef een overzicht van alle moestuinverenigingen",
-    category: "data",
+    text: "Kom ik als particulier in aanmerking voor een subsidie?",
+    category: "voorwaarden",
   },
-  { text: "Welke datasets heeft de gemeente over groen?", category: "data" },
-  { text: "Toon statistieken over stadslandbouw", category: "data" },
-  { text: "Lijst van subsidies voor groene initiatieven", category: "data" },
   {
-    text: "Hoeveel vierkante meter stadstuin is er per wijk?",
-    category: "data",
+    text: "Aan welke voorwaarden moet mijn aanvraag voldoen?",
+    category: "voorwaarden",
   },
-  { text: "Overzicht van voedselinitiatieven per stadsdeel", category: "data" },
-  { text: "Welke open data is er over duurzaamheid?", category: "data" },
-  { text: "Tabel met contactgegevens van buurttuinen", category: "data" },
-  { text: "Vergelijk wijken op groenvoorzieningen", category: "data" },
+  {
+    text: "Hoeveel subsidie kan ik maximaal krijgen?",
+    category: "voorwaarden",
+  },
+  {
+    text: "Welke voorwaarden gelden voor de Energiebespaarvoucher?",
+    category: "voorwaarden",
+  },
+  {
+    text: "Moet ik een subsidie terugbetalen?",
+    category: "voorwaarden",
+  },
+  {
+    text: "Wat moet ik kunnen aantonen bij een subsidieaanvraag?",
+    category: "voorwaarden",
+  },
 
-  // Beleid & Documenten
-  { text: "Wat is het voedselbeleid van Den Haag?", category: "policy" },
+  // Aanvragen
   {
-    text: "Welke plannen heeft de gemeente voor stadslandbouw?",
-    category: "policy",
+    text: "Hoe vraag ik een subsidie aan bij de gemeente?",
+    category: "aanvragen",
   },
-  { text: "Wat staat er in de Haagse voedselstrategie?", category: "policy" },
   {
-    text: "Hoe ondersteunt de gemeente buurtinitiatieven?",
-    category: "policy",
+    text: "Welke documenten heb ik nodig voor een aanvraag?",
+    category: "aanvragen",
   },
-  { text: "Beleid rondom voedselverspilling in Den Haag", category: "policy" },
-  { text: "Gemeentelijke visie op duurzame voeding", category: "policy" },
   {
-    text: "Wat zijn de doelen voor 2030 op voedselgebied?",
-    category: "policy",
+    text: "Hoe lang duurt het voordat ik antwoord krijg op mijn aanvraag?",
+    category: "aanvragen",
   },
-  { text: "Hoe past stadslandbouw in het omgevingsplan?", category: "policy" },
-  { text: "Subsidieregeling voor groene daken", category: "policy" },
-  { text: "Beleid voor korte voedselketens", category: "policy" },
+  {
+    text: "Wat gebeurt er nadat ik een subsidie heb aangevraagd?",
+    category: "aanvragen",
+  },
+  {
+    text: "Kan ik meerdere subsidies tegelijk aanvragen?",
+    category: "aanvragen",
+  },
+  {
+    text: "Waar kan ik terecht voor hulp bij mijn aanvraag?",
+    category: "aanvragen",
+  },
 
-  // Regelgeving
+  // Vergelijken
   {
-    text: "Mag ik een moestuin beginnen op gemeentegrond?",
-    category: "legal",
+    text: "Vergelijk subsidies voor het verduurzamen van mijn pand",
+    category: "vergelijken",
   },
   {
-    text: "Welke regels gelden voor het houden van kippen?",
-    category: "legal",
+    text: "Welke subsidie geeft het hoogste bedrag voor mijn project?",
+    category: "vergelijken",
   },
-  { text: "Vergunning nodig voor een kas in de tuin?", category: "legal" },
-  { text: "Wat zegt de Omgevingswet over stadslandbouw?", category: "legal" },
-  { text: "Regels voor verkoop van eigen groenten", category: "legal" },
-  { text: "Mag ik bijen houden in een woonwijk?", category: "legal" },
-  { text: "Bestemmingsplan voor volkstuinen", category: "legal" },
-  { text: "Voorwaarden voor een buurtmoestuin", category: "legal" },
-  { text: "Regelgeving rond composteren", category: "legal" },
-  { text: "Erfpacht voor stadslandbouw", category: "legal" },
+  {
+    text: "Vergelijk de subsidies voor buurtinitiatieven",
+    category: "vergelijken",
+  },
+  {
+    text: "Wat zijn de verschillen tussen de subsidies voor groene initiatieven?",
+    category: "vergelijken",
+  },
+  {
+    text: "Welke regeling past het beste bij een klein project?",
+    category: "vergelijken",
+  },
 
-  // Praktische Info
-  { text: "Hoe start ik een moestuin in Den Haag?", category: "practical" },
-  { text: "Tips voor beginners met stadstuinieren", category: "practical" },
-  { text: "Waar vind ik cursussen over groenteteelt?", category: "practical" },
-  { text: "Hoe sluit ik me aan bij een buurttuin?", category: "practical" },
+  // Deadlines & looptijd
   {
-    text: "Gemeentelijke contactpersoon voor stadslandbouw",
-    category: "practical",
+    text: "Welke subsidieregelingen lopen binnenkort af?",
+    category: "deadlines",
   },
-  { text: "Wanneer is de beste tijd om te zaaien?", category: "practical" },
-  { text: "Workshops over voedselbesparing", category: "practical" },
   {
-    text: "Hoe verminder ik voedselverspilling thuis?",
-    category: "practical",
+    text: "Tot wanneer kan ik een subsidie aanvragen?",
+    category: "deadlines",
   },
-  { text: "Initiatieven tegen voedselarmoede", category: "practical" },
-  { text: "Vrijwilligerswerk bij voedselprojecten", category: "practical" },
+  {
+    text: "Welke subsidieregelingen zijn onlangs gepubliceerd?",
+    category: "deadlines",
+  },
+  {
+    text: "Hoe lang loopt de subsidie voor groene daken nog?",
+    category: "deadlines",
+  },
+
+  // Uitleg
+  {
+    text: "Wat is een subsidie precies?",
+    category: "uitleg",
+  },
+  {
+    text: "Hoe werkt een subsidieregeling?",
+    category: "uitleg",
+  },
+  {
+    text: "Wat kan ik met een subsidie van de gemeente doen?",
+    category: "uitleg",
+  },
+  {
+    text: "Wat is het verschil tussen een subsidie en een lening?",
+    category: "uitleg",
+  },
+  {
+    text: "Wat betekent een subsidieplafond?",
+    category: "uitleg",
+  },
+  {
+    text: "Voor wie zijn gemeentelijke subsidies bedoeld?",
+    category: "uitleg",
+  },
 ];
 
 /**
@@ -146,4 +213,21 @@ export function getRandomSuggestions(
  */
 export function getRandomSuggestionTexts(count: number): string[] {
   return getRandomSuggestions(count).map((s) => s.text);
+}
+
+/**
+ * Get suggestions for the landing page, guaranteeing at least one from
+ * `pinnedCategory` so that category is always visible. Remaining slots are
+ * filled from the other categories and the final order is shuffled.
+ */
+export function getLandingSuggestions(
+  count: number,
+  pinnedCategory: SuggestionCategory
+): Suggestion[] {
+  const pinned = getRandomSuggestions(1, [pinnedCategory]);
+  const remaining = Math.max(0, count - pinned.length);
+  const rest = shuffleArray(
+    suggestions.filter((s) => s.category !== pinnedCategory)
+  ).slice(0, remaining);
+  return shuffleArray([...pinned, ...rest]);
 }

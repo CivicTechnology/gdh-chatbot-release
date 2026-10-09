@@ -31,7 +31,10 @@ export const ingestionConfig: IngestionConfig = {
     concurrencyLimit: 3,
   },
   database: {
-    batchSize: 50_000,
+    // Elke batch wordt tot één raw SQL-string opgebouwd, dus houd 'm bescheiden:
+    // 50k gaf een SQL-string van tientallen MB's per insert (geheugenpiek). 2,5k
+    // houdt de piek klein zonder veel extra round-trips (149k bomen ≈ 60 inserts).
+    batchSize: 2_500,
   },
   tokens: {
     defaultMaxPerChunk: 780,

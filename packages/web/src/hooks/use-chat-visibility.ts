@@ -1,8 +1,8 @@
 import useSWR, { useSWRConfig } from "swr";
 import { unstable_serialize } from "swr/infinite";
 import { getChatHistoryPaginationKey } from "@/components/sidebar-history";
-import type { VisibilityType } from "@/components/visibility-selector";
-import * as visibilityService from "@/services/visibility.service";
+import type { VisibilityType } from "@/lib/types";
+import { updateChatVisibility } from "@/services/visibility.service";
 
 export function useChatVisibility({
   chatId,
@@ -23,9 +23,23 @@ export function useChatVisibility({
 
   const visibilityType = localVisibility ?? "private";
 
+  /**
+   * Zet de zichtbaarheid om. De lokale waarde gaat vast vooruit zodat de UI
+   * direct reageert, maar draait terug als de server de wijziging weigert.
+   * De fout wordt doorgegooid zodat de aanroeper hem aan de gebruiker kan tonen.
+   */
   const setVisibilityType = async (updatedVisibilityType: VisibilityType) => {
+    const previousVisibilityType = visibilityType;
+
     setLocalVisibility(updatedVisibilityType);
-    await visibilityService.updateChatVisibility(chatId, updatedVisibilityType);
+
+    try {
+      await updateChatVisibility(chatId, updatedVisibilityType);
+    } catch (error) {
+      setLocalVisibility(previousVisibilityType);
+      throw error;
+    }
+
     mutate(unstable_serialize(getChatHistoryPaginationKey));
   };
 

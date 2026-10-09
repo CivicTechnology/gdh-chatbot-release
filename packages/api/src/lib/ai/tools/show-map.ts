@@ -202,23 +202,23 @@ const dataQuerySchema = z.object({
 		.describe("Dataset naam (uit getCkanInfo)"),
 	sql: z.string().describe(`PostgreSQL query voor markers, polygons, of lines.
 
-⚠️ KRITIEK - JSONB SYNTAX IS VERPLICHT:
+KRITIEK - JSONB SYNTAX IS VERPLICHT:
 Alle velden zitten in de 'data' JSONB kolom. Je MOET de JSONB operators gebruiken:
 - data->>'veldnaam' voor tekst (dubbele pijl)
 - (data->>'veld')::float voor decimale getallen
 - (data->>'veld')::int voor hele getallen
 - data->'polygon' of data->'line' voor JSON arrays (enkele pijl)
 
-⚠️ STRING CONCATENATIE - Gebruik CONCAT(), NIET ||:
-❌ FOUT: 'Prefix: '||data->>'veld' (veroorzaakt JSON parse error)
-✓ GOED: CONCAT('Prefix: ', data->>'veld')
+STRING CONCATENATIE - Gebruik CONCAT(), NIET ||:
+FOUT: 'Prefix: '||data->>'veld' (veroorzaakt JSON parse error)
+GOED: CONCAT('Prefix: ', data->>'veld')
 
-❌ FOUT: SELECT lat, lng FROM stadslandbouw
-✓ GOED: SELECT (data->>'lat')::float as lat, (data->>'lng')::float as lng FROM stadslandbouw
+FOUT: SELECT lat, lng FROM stadslandbouw
+GOED: SELECT (data->>'lat')::float as lat, (data->>'lng')::float as lng FROM stadslandbouw
 
-⚠️ CTE BEPERKINGEN - Datasets zijn CTEs, geen echte tabellen:
-- ❌ TABLESAMPLE werkt NIET op datasets
-- ✓ Gebruik ORDER BY RANDOM() LIMIT n voor sampling
+CTE BEPERKINGEN - Datasets zijn CTEs, geen echte tabellen:
+- FOUT: TABLESAMPLE werkt NIET op datasets
+- GOED: Gebruik ORDER BY RANDOM() LIMIT n voor sampling
 
 MARKERS query MOET bevatten:
 - (data->>'lat')::float as lat
@@ -509,7 +509,7 @@ MEERDERE DATASETS COMBINEREN:
 Gebruik dataQueries (array) om data uit meerdere datasets te combineren in één kaart.
 Elke query kan markers (lat/lng), polygonen (polygon veld), of lijnen (line veld) opleveren.
 
-⚠️ LET OP: Alle velden zitten in de 'data' JSONB kolom!
+LET OP: Alle velden zitten in de 'data' JSONB kolom!
 
 Voorbeeld - ecozones + ecobomenrijen in één kaart:
 dataQueries: [
@@ -523,8 +523,8 @@ dataQueries: [
   }
 ]
 
-❌ FOUT: SELECT lat, lng, naam FROM stadslandbouw
-✓ GOED: SELECT (data->>'lat')::float as lat, (data->>'lng')::float as lng, data->>'naam' as label FROM stadslandbouw
+FOUT: SELECT lat, lng, naam FROM stadslandbouw
+GOED: SELECT (data->>'lat')::float as lat, (data->>'lng')::float as lng, data->>'naam' as label FROM stadslandbouw
 
 HANDMATIGE MARKERS/LINES:
 Gebruik markers/lines array voor individuele elementen die niet uit een dataset komen.

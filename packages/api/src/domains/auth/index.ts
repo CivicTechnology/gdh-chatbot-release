@@ -1,7 +1,15 @@
 export { authRouter } from "./auth.routes.js";
 
 // Controller exports
-export { getSession, handleSignIn, handleSignUp, handleSignOut } from "./auth.controller.js";
+export {
+	getSession,
+	handleSignIn,
+	handleSignOut,
+	getAuthMethods,
+	handleMfaVerify,
+	handleMfaEnrollStart,
+	handleMfaEnrollVerify,
+} from "./auth.controller.js";
 
 // Service exports
 export {
@@ -29,6 +37,7 @@ export {
 // Middleware exports
 export {
 	requireAuth,
+	requireBeheerder,
 	optionalAuth,
 	setSessionCookie,
 	clearSessionCookie,

@@ -34,3 +34,38 @@ export function migrateAnonymousChatsToUser(sessionId: string, userId: string) {
 		data: { userId, sessionId: null },
 	});
 }
+
+export function findUserByEntraOid(entraOid: string) {
+	return prisma.user.findUnique({ where: { entraOid } });
+}
+
+export function linkEntraOid(userId: string, entraOid: string, role: string) {
+	return prisma.user.update({ where: { id: userId }, data: { entraOid, role } });
+}
+
+export function createEntraUser(data: { email: string; entraOid: string; role: string }) {
+	return prisma.user.create({ data });
+}
+
+export function setUserRole(userId: string, role: string) {
+	return prisma.user.update({ where: { id: userId }, data: { role } });
+}
+
+export function setTotpSecret(userId: string, totpSecret: string) {
+	return prisma.user.update({ where: { id: userId }, data: { totpSecret } });
+}
+
+export function enableMfa(userId: string, backupCodeHashes: string[]) {
+	return prisma.user.update({
+		where: { id: userId },
+		data: { mfaEnabled: true, mfaBackupCodes: backupCodeHashes },
+	});
+}
+
+export function setBackupCodes(userId: string, hashes: string[]) {
+	return prisma.user.update({ where: { id: userId }, data: { mfaBackupCodes: hashes } });
+}
+
+export function setLastTotpTimeStep(userId: string, lastTotpTimeStep: number) {
+	return prisma.user.update({ where: { id: userId }, data: { lastTotpTimeStep } });
+}

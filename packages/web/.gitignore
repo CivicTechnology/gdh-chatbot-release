@@ -43,3 +43,7 @@ pnpm-debug.log*
 
 # Vite
 .vite
+
+# Vite generated artifacts (tsc emit from vite.config.ts)
+vite.config.js
+vite.config.d.ts

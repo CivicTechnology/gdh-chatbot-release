@@ -132,6 +132,46 @@ export type ToolPart = {
   description?: string;
 };
 
+/** Voorvoegsel van de bronregel: enkelvoud en meervoud. */
+const SOURCE_PREFIX_SINGLE = "Bron";
+const SOURCE_PREFIX_MULTIPLE = "Bronnen";
+
+/** Zet een lijst om in lopende tekst: "a", "a en b", "a, b en c". */
+function joinDutchList(items: readonly string[]): string {
+  if (items.length <= 1) {
+    return items[0] ?? "";
+  }
+  const allButLast = items.slice(0, -1).join(", ");
+  return `${allButLast} en ${items[items.length - 1]}`;
+}
+
+/** Unieke bronnen van de meegegeven tools, in volgorde van raadplegen. */
+function getUniqueSources(tools: readonly ToolPart[]): string[] {
+  return [...new Set(tools.map((tool) => toolConfig[tool.type].sourceText))];
+}
+
+/**
+ * Compacte bronvermelding onder de statustekst.
+ *
+ * Staat bewust los van de statustekst: die mag door het model worden
+ * overschreven met een eigen samenvatting, de bron niet. De bron is een feit
+ * uit `toolConfig`, geen vrije tekst.
+ */
+function SourceNote({ sources }: { sources: readonly string[] }) {
+  if (sources.length === 0) {
+    return null;
+  }
+
+  const prefix =
+    sources.length === 1 ? SOURCE_PREFIX_SINGLE : SOURCE_PREFIX_MULTIPLE;
+
+  return (
+    <span className="text-muted-foreground text-xs">
+      {prefix}: {joinDutchList(sources)}
+    </span>
+  );
+}
+
 type ToolStatusProps = {
   /** All tool parts from the message */
   tools: ToolPart[];
@@ -175,6 +215,11 @@ export function ToolStatus({
   const hasPartialSuccess =
     isDone && completedTools.length > 0 && errorTools.length > 0;
 
+  // Bronnen van wat er daadwerkelijk is geraadpleegd. Los van de statustekst,
+  // zodat een samenvatting van het model de bronvermelding nooit verdringt.
+  const completedSources = getUniqueSources(completedTools);
+  const showSources = isDone && !allFailed && completedSources.length > 0;
+
   // Get the current status text
   const getStatusText = () => {
     if (isLoading) {
@@ -200,15 +245,7 @@ export function ToolStatus({
       const uniqueLabels = [
         ...new Set(completedTools.map((t) => toolConfig[t.type].label)),
       ];
-      if (uniqueLabels.length === 1) {
-        return `${uniqueLabels[0]} geraadpleegd`;
-      }
-      if (uniqueLabels.length === 2) {
-        return `${uniqueLabels[0]} en ${uniqueLabels[1]} geraadpleegd`;
-      }
-      // 3+ unique tools: "X, Y en Z geraadpleegd"
-      const lastLabel = uniqueLabels.pop();
-      return `${uniqueLabels.join(", ")} en ${lastLabel} geraadpleegd`;
+      return `${joinDutchList(uniqueLabels)} geraadpleegd`;
     };
 
     if (hasPartialSuccess || allSucceeded) {
@@ -228,7 +265,7 @@ export function ToolStatus({
     <div className={cn("w-full", className)}>
       <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
         {/* Main header */}
-        <CollapsibleTrigger className="flex w-full items-center gap-3 rounded-lg px-3 py-1.5 text-left transition-colors hover:bg-muted/50">
+        <CollapsibleTrigger className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-muted/50">
           {/* Status indicator with success burst */}
           <div className="relative shrink-0">
             <motion.div
@@ -281,15 +318,18 @@ export function ToolStatus({
             <SuccessBurst show={allSucceeded} />
           </div>
 
-          {/* Status text with staggered animation */}
-          <span
-            className={cn("flex-1 text-sm", {
-              "text-muted-foreground": isLoading,
-              "text-destructive": allFailed,
-              "text-foreground": isDone && !allFailed,
-            })}
-          >
-            <StaggeredText text={getStatusText()} />
+          {/* Status text with staggered animation, plus the source line */}
+          <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+            <span
+              className={cn("text-sm", {
+                "text-muted-foreground": isLoading,
+                "text-destructive": allFailed,
+                "text-foreground": isDone && !allFailed,
+              })}
+            >
+              <StaggeredText text={getStatusText()} />
+            </span>
+            {showSources && <SourceNote sources={completedSources} />}
           </span>
 
           {/* Stacked tool avatars */}
@@ -345,7 +385,7 @@ export function ToolStatus({
       </Collapsible>
 
       {/* Visual outputs - always visible */}
-      {visualOutputs && <div className="mt-2">{visualOutputs}</div>}
+      {visualOutputs && <div className="mt-3">{visualOutputs}</div>}
     </div>
   );
 }
@@ -398,15 +438,18 @@ function ToolTimelineItem({ tool, index }: ToolTimelineItemProps) {
         <Icon className={cn("size-3", colors.icon)} />
       </motion.div>
 
-      {/* Text label */}
-      <span
-        className={cn("ml-2 flex-1 text-sm", {
-          "text-muted-foreground": isLoading,
-          "text-destructive": isError,
-          "text-foreground": isComplete,
-        })}
-      >
-        {text}
+      {/* Text label with the source of this specific tool */}
+      <span className="ml-2 flex min-w-0 flex-1 flex-col gap-0.5">
+        <span
+          className={cn("text-sm", {
+            "text-muted-foreground": isLoading,
+            "text-destructive": isError,
+            "text-foreground": isComplete,
+          })}
+        >
+          {text}
+        </span>
+        {isComplete && <SourceNote sources={[config.sourceText]} />}
       </span>
 
       {/* Status indicator */}
