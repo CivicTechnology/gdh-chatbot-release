@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { OverZoektool } from "@/components/over-zoektool";
 import { ShareDialog } from "@/components/share-dialog";
 import { SidebarToggle } from "@/components/sidebar-toggle";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { VisibilityType } from "@/lib/types";
 import { PlusIcon } from "./icons";
@@ -44,7 +45,13 @@ function PureChatHeader({
         />
       )}
 
-      <div className="order-3 ml-auto">
+      <div className="order-3 ml-auto flex items-center gap-1">
+        <Badge
+          title="Deze zoektool wordt nog getest en verbeterd"
+          variant="warning"
+        >
+          Pilot
+        </Badge>
         <OverZoektool />
       </div>
     </header>

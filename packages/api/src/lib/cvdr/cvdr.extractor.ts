@@ -22,6 +22,21 @@ const numberOrNull = z
 		return Number.isFinite(num) ? num : null;
 	});
 
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+/** Alleen een geldige ISO-datum telt; alles anders (vrije tekst, "" ) wordt null. */
+const isoDateOrNull = z
+	.union([z.string(), z.null()])
+	.transform((value) =>
+		value && ISO_DATE.test(value) && !Number.isNaN(Date.parse(value))
+			? value
+			: null,
+	);
+
+const stringOrNull = z
+	.union([z.string(), z.null()])
+	.transform((value) => (value?.trim() ? value.trim() : null));
+
 const ExtractedFieldsSchema = z.object({
 	doel: stringOrJoinedArray,
 	voorwaarden: stringOrJoinedArray,
@@ -30,6 +45,8 @@ const ExtractedFieldsSchema = z.object({
 	doelgroepCluster: z.enum(["PARTICULIER", "BEDRIJF", "MAATSCHAPPELIJK"]),
 	maxBedragAanvrager: numberOrNull.optional().default(null),
 	totaalSubsidiePlafond: numberOrNull.optional().default(null),
+	aanvraagSluitingsdatum: isoDateOrNull.optional().default(null),
+	aanvraagperiode: stringOrNull.optional().default(null),
 	// Staffeling per doelgroep: alleen gevuld als de regeling verschillende
 	// bedragen per doelgroep noemt. Anders leeg ([]) en gelden de losse bedragen.
 	plafonds: z
@@ -47,6 +64,25 @@ const ExtractedFieldsSchema = z.object({
 });
 
 export type CvdrExtractedFields = z.infer<typeof ExtractedFieldsSchema>;
+
+/**
+ * Vangnet tegen een sluitingsdatum die de regeling onterecht als gesloten laat
+ * gelden. Het jaartal moet letterlijk in de aanvraagperiode staan (bij "uiterlijk
+ * 1 september van het kalenderjaar" verzint het model anders een jaar), en de
+ * periode mag geen later jaar noemen (dan hoort de datum bij een eerdere ronde,
+ * bv. "voor 2025 en 2026 van 1 oktober tot ..."). Liever geen datum dan een te vroege.
+ */
+export function betrouwbareSluitingsdatum(
+	sluitingsdatum: string | null,
+	aanvraagperiode: string | null,
+): string | null {
+	if (!sluitingsdatum) return null;
+	const sluitingsjaar = Number(sluitingsdatum.slice(0, 4));
+	const jaren = ((aanvraagperiode ?? "").match(/\b20\d{2}\b/g) ?? []).map(Number);
+	const jaarStaatErIn = jaren.includes(sluitingsjaar);
+	const laterJaar = jaren.some((jaar) => jaar > sluitingsjaar);
+	return jaarStaatErIn && !laterJaar ? sluitingsdatum : null;
+}
 
 const xmlTextParser = new XMLParser({
 	ignoreAttributes: true,
@@ -118,7 +154,11 @@ Kies de meest dominante cluster.
 
 Bedragen: alleen invullen als de tekst expliciet een euro-bedrag noemt; anders null. Geen schattingen.
 
-Plafonds (staffeling per doelgroep): noemt de regeling VERSCHILLENDE maxbedragen of subsidieplafonds voor verschillende doelgroepen (bv. particulier max 750 euro, stichting/organisatie max 5000 euro), zet die dan elk als los item in "plafonds" met de bijbehorende doelgroepCluster, doelgroepNaam en het bedrag. Geldt er maar één bedrag voor iedereen, laat "plafonds" dan leeg ([]) en gebruik alleen maxBedragAanvrager/totaalSubsidiePlafond.`;
+Plafonds (staffeling per doelgroep): noemt de regeling VERSCHILLENDE maxbedragen of subsidieplafonds voor verschillende doelgroepen (bv. particulier max 750 euro, stichting/organisatie max 5000 euro), zet die dan elk als los item in "plafonds" met de bijbehorende doelgroepCluster, doelgroepNaam en het bedrag. Geldt er maar één bedrag voor iedereen, laat "plafonds" dan leeg ([]) en gebruik alleen maxBedragAanvrager/totaalSubsidiePlafond.
+
+Aanvraagtermijn: zoek in de tekst wanneer een aanvraag om subsidie (verlening) kan worden ingediend, vaak in een artikel "Aanvraagtermijn". Termijnen voor verantwoording of vaststelling achteraf tellen niet.
+- "aanvraagperiode": korte zin in gewone taal, bv. "uiterlijk 31 december 2025", "jaarlijks van 1 februari tot en met 1 maart", "uiterlijk zes weken voor de start van de activiteit". null als de tekst er niets over zegt.
+- "aanvraagSluitingsdatum": de laatste dag waarop nog een aanvraag kan, als JJJJ-MM-DD, alleen als de tekst een vaste datum mét jaartal noemt. Noemt de tekst meerdere aanvraagrondes, jaren of onderdelen, neem dan de einddatum van de LAATSTE ronde; is het jaartal daarvan niet eenduidig, gebruik null. null bij een jaarlijks terugkerende periode, een termijn ten opzichte van de activiteit, of als er geen einddatum staat. De vervaldatum van de regeling zelf ("deze regeling vervalt op ...") is GEEN aanvraagSluitingsdatum.`;
 
 	const userPrompt = `Extract de volgende velden als JSON:
 {
@@ -129,6 +169,8 @@ Plafonds (staffeling per doelgroep): noemt de regeling VERSCHILLENDE maxbedragen
   "doelgroepCluster": "PARTICULIER" | "BEDRIJF" | "MAATSCHAPPELIJK",
   "maxBedragAanvrager": number | null,
   "totaalSubsidiePlafond": number | null,
+  "aanvraagperiode": string | null,
+  "aanvraagSluitingsdatum": "JJJJ-MM-DD" | null,
   "plafonds": [{ "doelgroepCluster": "PARTICULIER" | "BEDRIJF" | "MAATSCHAPPELIJK", "doelgroepNaam": string, "maxBedragAanvrager": number | null, "totaalSubsidiePlafond": number | null, "omschrijving": string }]
 }
 
@@ -147,8 +189,14 @@ ${plainText}`;
 		abortSignal: options.signal,
 	});
 
-	const parsed = parseJsonResponse(result.text);
-	return ExtractedFieldsSchema.parse(parsed);
+	const fields = ExtractedFieldsSchema.parse(parseJsonResponse(result.text));
+	return {
+		...fields,
+		aanvraagSluitingsdatum: betrouwbareSluitingsdatum(
+			fields.aanvraagSluitingsdatum,
+			fields.aanvraagperiode,
+		),
+	};
 }
 
 /**

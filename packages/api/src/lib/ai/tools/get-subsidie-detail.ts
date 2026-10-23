@@ -2,6 +2,7 @@ import { tool } from "ai";
 import { z } from "zod";
 import { findById } from "@/domains/subsidieregeling/subsidieregeling.repository.js";
 import { DOORVERWIJZING } from "@/lib/constants.js";
+import { aanvraagtermijn } from "./aanvraagtermijn.js";
 
 /**
  * Detail-tool die complementair is aan `findSubsidies`: de zoektool levert
@@ -65,6 +66,7 @@ gebruik je \`findSubsidies\`.`,
 			looptijdStart: regeling.looptijdStart?.toISOString().slice(0, 10) ?? null,
 			looptijdEind: regeling.looptijdEind?.toISOString().slice(0, 10) ?? null,
 			vervaldatum: regeling.vervaldatum?.toISOString().slice(0, 10) ?? null,
+			...aanvraagtermijn(regeling),
 			publicatieDatum: regeling.publicatieDatum?.toISOString().slice(0, 10) ?? null,
 			bronGewijzigdOp:
 				regeling.bronGewijzigdOp?.toISOString().slice(0, 10) ?? null,

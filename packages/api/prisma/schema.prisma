@@ -330,6 +330,14 @@ model SubsidieRegeling {
   /// { doelgroepCluster, doelgroepNaam?, maxBedragAanvrager?, totaalSubsidiePlafond?, omschrijving? }.
   plafonds               Json?
   vervaldatum            DateTime?
+  /// Laatste dag waarop een aanvraag kan worden ingediend, zoals de regelingstekst
+  /// die noemt ("uiterlijk 31 december 2025"). Los van vervaldatum: een regeling
+  /// kan nog jaren gelden terwijl het aanvragen al gesloten is. Null bij geen
+  /// vaste einddatum of een jaarlijks terugkerende aanvraagperiode.
+  aanvraagSluitingsdatum DateTime?
+  /// Wanneer aanvragen kan, in gewone taal uit de regelingstekst, bv.
+  /// "jaarlijks van 1 februari tot en met 1 maart".
+  aanvraagperiode        String?
   /// Datum van officiële bekendmaking (dcterms.issued uit de overheid.nl SRU/CVDR-feed).
   publicatieDatum        DateTime?
   /// Wanneer de regeling inhoudelijk laatst wijzigde bij de bron. Alleen gezet

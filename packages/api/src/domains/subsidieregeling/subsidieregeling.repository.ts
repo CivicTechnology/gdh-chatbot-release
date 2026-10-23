@@ -294,6 +294,8 @@ export type SubsidieRegelingSearchResult = {
 	totaalSubsidiePlafond: string | null;
 	plafonds: unknown;
 	vervaldatum: Date | null;
+	aanvraagSluitingsdatum: Date | null;
+	aanvraagperiode: string | null;
 	publicatieDatum: Date | null;
 	bronGewijzigdOp: Date | null;
 	bronGecontroleerdOp: Date | null;
@@ -341,6 +343,8 @@ export async function searchActive({
 		totaalSubsidiePlafond: string | null;
 		plafonds: unknown;
 		vervaldatum: Date | null;
+		aanvraagSluitingsdatum: Date | null;
+		aanvraagperiode: string | null;
 		publicatieDatum: Date | null;
 		bronGewijzigdOp: Date | null;
 		bronGecontroleerdOp: Date | null;
@@ -366,6 +370,8 @@ export async function searchActive({
 			r."totaalSubsidiePlafond",
 			r."plafonds",
 			r."vervaldatum",
+			r."aanvraagSluitingsdatum",
+			r."aanvraagperiode",
 			r."publicatieDatum",
 			r."bronGewijzigdOp",
 			r."bronGecontroleerdOp",
