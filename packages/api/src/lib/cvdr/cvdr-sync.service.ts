@@ -433,6 +433,8 @@ async function upsertRegeling(
 		doelgroepCluster: "PARTICULIER" | "BEDRIJF" | "MAATSCHAPPELIJK";
 		maxBedragAanvrager: number | null;
 		totaalSubsidiePlafond: number | null;
+		aanvraagSluitingsdatum: string | null;
+		aanvraagperiode: string | null;
 		plafonds: Array<{
 			doelgroepCluster: "PARTICULIER" | "BEDRIJF" | "MAATSCHAPPELIJK";
 			doelgroepNaam: string;
@@ -484,6 +486,10 @@ async function upsertRegeling(
 		maxBedragAanvrager: fields.maxBedragAanvrager,
 		totaalSubsidiePlafond: fields.totaalSubsidiePlafond,
 		plafonds: fields.plafonds,
+		aanvraagSluitingsdatum: fields.aanvraagSluitingsdatum
+			? new Date(fields.aanvraagSluitingsdatum)
+			: null,
+		aanvraagperiode: fields.aanvraagperiode,
 		looptijdStart,
 		vervaldatum,
 		publicatieDatum,

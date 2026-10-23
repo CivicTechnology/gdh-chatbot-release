@@ -14,6 +14,10 @@ type ComparedRegeling = {
   totaalSubsidiePlafond: string | null;
   looptijdEind: string | null;
   vervaldatum: string | null;
+  // Optioneel: vergelijkingen uit gesprekken van vóór de aanvraagtermijn-extractie missen ze.
+  aanvraagperiode?: string | null;
+  aanvraagSluitingsdatum?: string | null;
+  aanvragenGesloten?: boolean;
   bronUrl: string;
   status: string;
   vervangenDoor: { naam: string; bronUrl: string } | null;
@@ -53,6 +57,14 @@ function formatBedrag(value: string | null): string {
     currency: "EUR",
     maximumFractionDigits: 0,
   }).format(n);
+}
+
+function formatDatum(value: string | null | undefined): string {
+  return value
+    ? new Intl.DateTimeFormat("nl-NL", { dateStyle: "long" }).format(
+        new Date(value)
+      )
+    : "onbekende datum";
 }
 
 type Deadline = { label: string; soon: boolean };
@@ -115,7 +127,11 @@ function SubsidieComparisonInner({
       const id = bedragWinners[0];
       const winner = regelingen.find((r) => r.id === id);
       const plafondOk = maxPlafond === null || plafondWinners.includes(id);
-      if (winner?.status === "ACTIEF" && plafondOk) {
+      if (
+        winner?.status === "ACTIEF" &&
+        !winner.aanvragenGesloten &&
+        plafondOk
+      ) {
         crownId = id;
       }
     }
@@ -187,6 +203,16 @@ function SubsidieComparisonInner({
         if (vervangen) {
           badges.push({ key: "vervangen", label: "Vervangen", tone: "amber" });
         }
+        if (r.aanvragenGesloten) {
+          badges.push({
+            key: "gesloten",
+            label: "Aanvragen gesloten",
+            tone: "amber",
+          });
+        }
+        const aanvragen = r.aanvragenGesloten
+          ? `gesloten sinds ${formatDatum(r.aanvraagSluitingsdatum)}`
+          : r.aanvraagperiode;
 
         return (
           <motion.div
@@ -260,6 +286,24 @@ function SubsidieComparisonInner({
                   {deadline.label}
                 </span>
               </div>
+
+              {aanvragen && (
+                <div className="flex items-start gap-2.5">
+                  <span className="w-20 shrink-0 pt-0.5 text-muted-foreground text-xs">
+                    Aanvragen
+                  </span>
+                  <span
+                    className={cn(
+                      "text-sm",
+                      r.aanvragenGesloten
+                        ? "text-amber-700 dark:text-amber-400"
+                        : "text-foreground"
+                    )}
+                  >
+                    {aanvragen}
+                  </span>
+                </div>
+              )}
 
               <div className="flex items-center gap-2.5">
                 <span className="w-20 shrink-0 text-muted-foreground text-xs">

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { searchActive } from "@/domains/subsidieregeling/subsidieregeling.repository.js";
 import { createEmbedding } from "@/lib/ai/embeddings.js";
 import { DOORVERWIJZING } from "@/lib/constants.js";
+import { aanvraagtermijn } from "./aanvraagtermijn.js";
 
 /**
  * Vector-similarity drempel (cosine distance) waaronder een regeling als
@@ -44,6 +45,8 @@ Belangrijke regels:
   daarna alleen de doorverwijzing en stop. Voeg GEEN eigen tips, stappenplannen of alternatieve
   routes toe. Hetzelfde geldt als er wel regelingen terugkomen maar geen enkele bij de vraag past.
   Doorverwijzing: ${DOORVERWIJZING}
+- Wanneer 'aanvragenGesloten' true is: presenteer de regeling NIET als actuele mogelijkheid. Zeg
+  dat aanvragen kon tot 'aanvraagSluitingsdatum' en dat die termijn voorbij is.
 - Wanneer een resultaat een 'vervangenDoor' heeft: noem alleen de opvolger met een eenmalige
   melding "deze regeling is vervangen door [naam]".
 - Heeft een regeling een gevulde 'plafonds'-lijst (verschillende bedragen per doelgroep), noem dan
@@ -81,6 +84,7 @@ Belangrijke regels:
 				maxBedragAanvrager: row.maxBedragAanvrager,
 				plafonds: row.plafonds,
 				vervaldatum: row.vervaldatum?.toISOString().slice(0, 10) ?? null,
+				...aanvraagtermijn(row),
 				publicatieDatum: row.publicatieDatum?.toISOString().slice(0, 10) ?? null,
 				bronGewijzigdOp: row.bronGewijzigdOp?.toISOString().slice(0, 10) ?? null,
 				bronGecontroleerdOp:

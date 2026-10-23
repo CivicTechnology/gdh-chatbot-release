@@ -50,6 +50,15 @@ export const Greeting = () => (
     >
       Stel uw vraag over de actuele subsidieregelingen van de gemeente Den Haag
     </motion.p>
+    <motion.p
+      animate={{ opacity: 1, y: 0 }}
+      className="mt-3 max-w-md rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-center text-amber-900 text-xs leading-relaxed dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200"
+      initial={{ opacity: 0, y: 10 }}
+      transition={{ delay: 0.45 }}
+    >
+      Dit is een pilot. De zoektool wordt nog getest en verbeterd. Laat bij elk
+      antwoord weten of het nuttig was, met de duimpjes eronder.
+    </motion.p>
     <motion.div
       animate={{ opacity: 1, y: 0 }}
       className="mt-6 w-full rounded-xl border border-border bg-muted/30 p-4 md:p-5"

@@ -158,6 +158,10 @@ export function PureMessageActions({
           <CopyIcon size={14} />
         </Action>
 
+        <span className="mr-1 ml-2 text-muted-foreground text-xs">
+          {feedback ? "Bedankt voor uw reactie" : "Was dit antwoord nuttig?"}
+        </span>
+
         <Action
           aria-pressed={isUpvoted}
           className={cn(

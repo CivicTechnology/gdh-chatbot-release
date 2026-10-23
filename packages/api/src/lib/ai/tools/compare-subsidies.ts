@@ -1,6 +1,7 @@
 import { tool } from "ai";
 import { z } from "zod";
 import { findById } from "@/domains/subsidieregeling/subsidieregeling.repository.js";
+import { aanvraagtermijn } from "./aanvraagtermijn.js";
 
 export type ComparedRegeling = {
 	id: string;
@@ -13,6 +14,9 @@ export type ComparedRegeling = {
 	plafonds: unknown;
 	looptijdEind: string | null;
 	vervaldatum: string | null;
+	aanvraagperiode: string | null;
+	aanvraagSluitingsdatum: string | null;
+	aanvragenGesloten: boolean;
 	publicatieDatum: string | null;
 	bronUrl: string;
 	status: string;
@@ -74,6 +78,7 @@ Geef de id's mee zoals teruggegeven door findSubsidies — geen URL's, geen name
 				plafonds: regeling.plafonds ?? null,
 				looptijdEind: regeling.looptijdEind?.toISOString().slice(0, 10) ?? null,
 				vervaldatum: regeling.vervaldatum?.toISOString().slice(0, 10) ?? null,
+				...aanvraagtermijn(regeling),
 				publicatieDatum:
 					regeling.publicatieDatum?.toISOString().slice(0, 10) ?? null,
 				bronUrl: regeling.bronUrl,
@@ -94,6 +99,9 @@ Geef de id's mee zoals teruggegeven door findSubsidies — geen URL's, geen name
 		const o = output as CompareOutput;
 		const value = JSON.stringify({
 			vergeleken: o.regelingen.map((r) => r.naam),
+			aanvragenGesloten: o.regelingen
+				.filter((r) => r.aanvragenGesloten)
+				.map((r) => ({ naam: r.naam, sinds: r.aanvraagSluitingsdatum })),
 			gedropt: o.gedropt.length,
 			rendered: "comparison-ranked-cards",
 		});
