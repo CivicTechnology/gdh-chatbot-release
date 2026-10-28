@@ -13,11 +13,14 @@ export const ARC_GIS_SOURCE_NAME = process.env.ARC_GIS_SOURCE_NAME;
 
 /**
  * Doorverwijskanalen voor initiatiefnemers: niet naar 14070 of denhaag.nl,
- * wel naar PEP Den Haag en Haagse Stadmakers.
+ * wel naar het eigen stadsdeel, PEP Den Haag en Haagse Stadmakers.
  * De bron van waarheid staat in packages/shared, omdat de
- * web-app dezelfde twee kanalen in de subsidie-widgets toont.
+ * web-app dezelfde kanalen in de subsidie-widgets toont.
  */
 export {
   DOORVERWIJZING,
   PEP_DEN_HAAG_URL,
+  STADSDELEN,
+  STADSDELEN_URL,
+  WIJKAGENDA_URL,
 } from "@gdh-chatbot/shared/doorverwijzing";
