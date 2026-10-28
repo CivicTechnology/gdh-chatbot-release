@@ -25,7 +25,7 @@ import { CheckCircleFillIcon, CopyIcon, ShareIcon } from "./icons";
 const COPIED_FEEDBACK_MS = 2000;
 
 const CHECKING_MESSAGE = "Even geduld. We kijken of dit gesprek al klaarstaat.";
-const NOT_SAVED_MESSAGE = "Stel eerst een vraag. Daarna kunt u een link maken.";
+const NOT_SAVED_MESSAGE = "Stel eerst een vraag. Daarna kun je een link maken.";
 const GENERIC_ERROR_MESSAGE =
   "Er ging iets mis met het delen van dit gesprek. Probeer het later opnieuw.";
 
@@ -128,7 +128,7 @@ export function ShareDialog({
           <DialogDescription>
             {isPublic
               ? "Er staat een link klaar. Iedereen die de link heeft, kan dit gesprek lezen."
-              : "Maak een link waarmee u dit gesprek kunt laten lezen door iemand anders."}
+              : "Maak een link waarmee je dit gesprek kunt laten lezen door iemand anders."}
           </DialogDescription>
         </DialogHeader>
 
@@ -183,8 +183,8 @@ export function ShareDialog({
         ) : (
           <>
             <p className="text-muted-foreground text-sm">
-              Zodra u een link maakt, kan iedereen met die link het hele gesprek
-              lezen. U kunt het delen op elk moment weer stoppen.
+              Zodra je een link maakt, kan iedereen met die link het hele
+              gesprek lezen. Je kunt het delen op elk moment weer stoppen.
             </p>
 
             <DialogFooter className="border-border border-t pt-4">

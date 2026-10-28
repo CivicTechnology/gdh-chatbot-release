@@ -242,8 +242,8 @@ export function SidebarUserNav({ user }: { user: User | undefined }) {
             <AlertDialogTitle>Alle chats verwijderen?</AlertDialogTitle>
             <AlertDialogDescription>
               {isAnonymous
-                ? "Deze actie kan niet ongedaan worden gemaakt. Dit verwijdert al uw chats uit uw browser."
-                : "Deze actie kan niet ongedaan worden gemaakt. Dit verwijdert al uw chats definitief van onze servers."}
+                ? "Deze actie kan niet ongedaan worden gemaakt. Dit verwijdert al je chats uit je browser."
+                : "Deze actie kan niet ongedaan worden gemaakt. Dit verwijdert al je chats definitief van onze servers."}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

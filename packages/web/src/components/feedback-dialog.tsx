@@ -71,7 +71,7 @@ export function FeedbackDialog({
               : "Vervelend dat dit antwoord niet hielp"}
           </DialogTitle>
           <DialogDescription>
-            De beoordeling is opgeslagen. Wilt u nog kort toelichten waarom? Dat
+            De beoordeling is opgeslagen. Wil je nog kort toelichten waarom? Dat
             helpt ons de zoektool te verbeteren.
           </DialogDescription>
         </DialogHeader>

@@ -28,10 +28,10 @@ export const HAAGSE_STADMAKERS_LABEL = "Haagse Stadmakers";
 
 /**
  * Standaard doorverwijszin voor de assistent. Markdown-links, want de
- * assistent-output wordt als markdown gerenderd. Korte zinnen en nooit twee
- * keer "u" achter elkaar, conform de B1-stijlregels van de systeemprompt.
+ * assistent-output wordt als markdown gerenderd. Korte zinnen in de je-vorm,
+ * conform de B1-stijlregels van de systeemprompt.
  */
-export const DOORVERWIJZING = `Wilt u een idee bespreken? Mail dan het eigen [stadsdeel](${STADSDELEN_URL}). Voor hulp bij subsidies, bewonersinitiatieven, verenigingen en stichtingen kunt u terecht bij [${PEP_DEN_HAAG_LABEL}](${PEP_DEN_HAAG_URL}). Initiatiefnemers in de stad kunnen ook terecht bij [${HAAGSE_STADMAKERS_LABEL}](${HAAGSE_STADMAKERS_URL}).`;
+export const DOORVERWIJZING = `Wil je een idee bespreken? Mail dan je eigen [stadsdeel](${STADSDELEN_URL}). Voor hulp bij subsidies, bewonersinitiatieven, verenigingen en stichtingen kun je terecht bij [${PEP_DEN_HAAG_LABEL}](${PEP_DEN_HAAG_URL}). Initiatiefnemers in de stad kunnen ook terecht bij [${HAAGSE_STADMAKERS_LABEL}](${HAAGSE_STADMAKERS_URL}).`;
 
 /** De acht stadsdelen met hun algemene mailadres. */
 export const STADSDELEN = [
@@ -51,7 +51,7 @@ export const STADSDELEN = [
 /** Dezelfde kanalen, voor UI-componenten die zelf links renderen. */
 export const DOORVERWIJZINGEN = [
   {
-    label: "Uw stadsdeel",
+    label: "Je stadsdeel",
     omschrijving: "om een idee te bespreken",
     url: STADSDELEN_URL,
   },

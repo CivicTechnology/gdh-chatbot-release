@@ -143,7 +143,7 @@ export async function extractFieldsFromXml(
 
 Schrijfstijl:
 - Klantvriendelijk, helder Nederlands. Geen juridisch jargon.
-- "U" niet "je". Vermijd jargon zoals "aanvrager"; gebruik "u" of de doelgroep.
+- "Je" niet "u". Vermijd jargon zoals "aanvrager"; gebruik "je" of de doelgroep.
 - Concrete getallen overnemen waar genoemd; nooit verzinnen.
 
 Doelgroep-cluster:
@@ -164,7 +164,7 @@ Aanvraagtermijn: zoek in de tekst wanneer een aanvraag om subsidie (verlening) k
 {
   "doel": string (1-2 zinnen — voor wie en waarvoor),
   "voorwaarden": string (concrete voorwaarden in eigen woorden; gebruik \\n voor regelovergangen, NIET een array),
-  "aanvraagprocedure": string (hoe u aanvraagt; gebruik \\n voor regelovergangen, NIET een array),
+  "aanvraagprocedure": string (hoe je aanvraagt; gebruik \\n voor regelovergangen, NIET een array),
   "doelgroepNaam": string (korte aanduiding doelgroep),
   "doelgroepCluster": "PARTICULIER" | "BEDRIJF" | "MAATSCHAPPELIJK",
   "maxBedragAanvrager": number | null,

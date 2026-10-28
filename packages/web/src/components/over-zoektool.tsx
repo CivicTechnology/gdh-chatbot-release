@@ -30,7 +30,7 @@ const platformPunten = [
 ];
 
 const zoekTips = [
-  "Wees specifiek in uw zoekopdracht voor betere resultaten.",
+  "Wees specifiek in je zoekopdracht voor betere resultaten.",
   "Noem details zoals doelgroep, thema en fase om gerichter te zoeken.",
   "Controleer altijd deadlines en vereisten tijdig.",
   "Gebruik de informatie als startpunt voor verdere verdieping en aanvraag.",
@@ -115,7 +115,7 @@ export const OverZoektool = () => (
           />
           <div className="space-y-0.5">
             <SheetTitle className="text-lg leading-tight">
-              Welkom bij de AI-zoektool voor subsidie
+              Welkom bij de AI zoektool
             </SheetTitle>
             <SheetDescription>
               Onderdeel van het KID-platform van de gemeente Den Haag
@@ -127,23 +127,23 @@ export const OverZoektool = () => (
       <ScrollArea className="flex-1">
         <div className="space-y-7 px-6 py-6 text-sm">
           <p className="text-[15px] text-foreground/90 leading-relaxed">
-            Bent u op zoek naar een passende subsidie voor uw project,
-            initiatief of organisatie? Het KID-platform helpt u met behulp van
-            een AI-zoektool snel en gericht bij het vinden van
-            subsidiemogelijkheden die aansluiten bij uw doelen.
+            Ben je op zoek naar een passende subsidie voor je project,
+            initiatief of organisatie? De AI zoektool helpt je snel en gericht
+            bij het vinden van subsidiemogelijkheden die aansluiten bij je
+            doelen.
           </p>
 
-          <Sectie icon={ListChecks} titel="Op dit platform kunt u">
+          <Sectie icon={ListChecks} titel="Met deze zoektool kun je">
             <VinkLijst items={platformPunten} />
           </Sectie>
 
           <Sectie icon={Compass} titel="Hoe werkt het?">
             <p>
-              U start door uw zoekvraag zo concreet mogelijk te formuleren. Denk
-              hierbij aan het type project, de doelstelling, de doelgroep en de
-              fase waarin uw initiatief zich bevindt. Op basis van uw
+              Je start door je zoekvraag zo concreet mogelijk te formuleren.
+              Denk hierbij aan het type project, de doelstelling, de doelgroep
+              en de fase waarin je initiatief zich bevindt. Op basis van je
               beschrijving zoekt de assistent gericht; door aanvullende vragen
-              te beantwoorden of uw vraag aan te scherpen verfijnt u het
+              te beantwoorden of je vraag aan te scherpen verfijn je het
               overzicht tot de meest relevante subsidieregelingen.
             </p>
           </Sectie>
@@ -159,19 +159,19 @@ export const OverZoektool = () => (
               Het model mag alleen die bronnen gebruiken. Eigen kennis mag het
               er niet bij halen. Dat is het verschil met een gewone chatbot. Bij
               de resultaten staat waar een antwoord vandaan komt. Bij
-              subsidieregelingen kunt u doorklikken naar de officiële bron.
+              subsidieregelingen kun je doorklikken naar de officiële bron.
             </p>
           </Sectie>
 
-          <Sectie icon={Sparkles} titel="Wat kunt u verwachten?">
+          <Sectie icon={Sparkles} titel="Wat kun je verwachten?">
             <p>
-              Het KID-platform biedt een eerste selectie en richting: het helpt
-              u om snel kansrijke subsidies te identificeren. Het platform
-              ondersteunt u bij het oriënteren, maar vervangt niet de formele
+              De AI zoektool biedt een eerste selectie en richting: hij helpt je
+              om snel kansrijke subsidies te vinden. De zoektool ondersteunt je
+              bij het oriënteren, maar vervangt niet de formele
               subsidie-informatie van verstrekkers.
             </p>
             <p>
-              Het KID-platform is een product in ontwikkeling. Dit betekent dat
+              De AI zoektool is een product in ontwikkeling. Dit betekent dat
               functionaliteiten en inhoud continu worden verbeterd en aangevuld
               op basis van gebruik en feedback.
             </p>
@@ -181,21 +181,21 @@ export const OverZoektool = () => (
             <VinkLijst items={zoekTips} />
           </Sectie>
 
-          <Sectie icon={Lock} titel="Privacy en uw gegevens">
+          <Sectie icon={Lock} titel="Privacy en je gegevens">
             <p>
               De zoektool vraagt niet om persoonsgegevens. Naam, adres en andere
-              gegevens over uzelf zijn dus niet nodig. Laat die informatie ook
+              gegevens over jezelf zijn dus niet nodig. Laat die informatie ook
               liever weg uit een vraag.
             </p>
             <p>
-              Vraag en antwoord worden samen bewaard als gesprek, zodat u het
+              Vraag en antwoord worden samen bewaard als gesprek, zodat je het
               later kunt terugvinden. De beheerders lezen niet zomaar mee. Geeft
               iemand een duimpje omhoog of omlaag? Dan zien zij die ene vraag en
-              dat ene antwoord. Het hele gesprek zien zij alleen wanneer u in
+              dat ene antwoord. Het hele gesprek zien zij alleen wanneer je in
               het feedbackvenster het vinkje aanzet om het gesprek te delen.
             </p>
             <p>
-              U kunt een gesprek delen via een link. Iedereen met die link kan
+              Je kunt een gesprek delen via een link. Iedereen met die link kan
               het gesprek lezen. Deel de link daarom alleen met mensen die het
               gesprek mogen zien.
             </p>
@@ -210,13 +210,13 @@ export const OverZoektool = () => (
             </p>
             <p>
               De zoektool kan ook een regeling missen. Een antwoord is daardoor
-              niet altijd volledig. Ziet u niet wat u zoekt? Stel uw vraag dan
+              niet altijd volledig. Zie je niet wat je zoekt? Stel je vraag dan
               op een andere manier of met andere woorden.
             </p>
             <p>
               Controleer daarom altijd de meest actuele en volledige informatie
-              bij de officiële bron of de subsidieverstrekker voordat u een
-              aanvraag voorbereidt of indient. Het KID-platform is bedoeld als
+              bij de officiële bron of de subsidieverstrekker voordat je een
+              aanvraag voorbereidt of indient. De AI zoektool is bedoeld als
               hulpmiddel en eerste selectie, niet als juridisch of bindend
               advies.
             </p>
@@ -224,8 +224,8 @@ export const OverZoektool = () => (
 
           <Sectie icon={Handshake} titel="Samenwerking">
             <p>
-              Het KID-platform is ontwikkeld door Bonsai in opdracht van de
-              gemeente Den Haag. Het platform is tot stand gekomen in
+              De AI zoektool is ontwikkeld door Bonsai in opdracht van de
+              gemeente Den Haag. De zoektool is tot stand gekomen in
               samenwerking met verschillende partners. Samen werken wij aan het
               verbeteren van de toegankelijkheid en vindbaarheid van
               subsidiemogelijkheden.

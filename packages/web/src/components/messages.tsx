@@ -17,7 +17,7 @@ import { Conversation, ConversationContent } from "./elements/conversation";
 import { Greeting } from "./greeting";
 import { PreviewMessage, ThinkingMessage } from "./message";
 
-const BACK_TO_QUESTION_LABEL = "Terug naar uw vraag";
+const BACK_TO_QUESTION_LABEL = "Terug naar je vraag";
 const TO_LATEST_MESSAGE_LABEL = "Naar het laatste bericht";
 
 type ScrollNavButtonProps = {

@@ -142,7 +142,7 @@ export function PureMessageActions({
         comment: input.comment,
         chatShared: input.chatShared,
       });
-      toast.success("Bedankt voor uw feedback!");
+      toast.success("Bedankt voor je feedback!");
     } catch {
       toast.error("Feedback versturen mislukt.");
     }
@@ -159,7 +159,7 @@ export function PureMessageActions({
         </Action>
 
         <span className="mr-1 ml-2 text-muted-foreground text-xs">
-          {feedback ? "Bedankt voor uw reactie" : "Was dit antwoord nuttig?"}
+          {feedback ? "Bedankt voor je reactie" : "Was dit antwoord nuttig?"}
         </span>
 
         <Action
