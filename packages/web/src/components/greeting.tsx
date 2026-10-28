@@ -4,7 +4,7 @@ import { FileText, Scale, Search } from "lucide-react";
 const hulpPunten = [
   {
     icon: Search,
-    text: "Ontdek welke subsidies bij uw plan of situatie passen",
+    text: "Ontdek welke subsidies bij jouw plan of situatie passen",
   },
   {
     icon: Scale,
@@ -40,7 +40,7 @@ export const Greeting = () => (
       initial={{ opacity: 0, y: 10 }}
       transition={{ delay: 0.3 }}
     >
-      Hoe kan ik u helpen?
+      Hoe kan ik je helpen?
     </motion.h1>
     <motion.p
       animate={{ opacity: 1, y: 0 }}
@@ -48,7 +48,7 @@ export const Greeting = () => (
       initial={{ opacity: 0, y: 10 }}
       transition={{ delay: 0.4 }}
     >
-      Stel uw vraag over de actuele subsidieregelingen van de gemeente Den Haag
+      Stel je vraag over de actuele subsidieregelingen van de gemeente Den Haag
     </motion.p>
     <motion.p
       animate={{ opacity: 1, y: 0 }}
@@ -66,15 +66,15 @@ export const Greeting = () => (
       transition={{ delay: 0.5 }}
     >
       <p className="text-foreground/90 text-sm leading-relaxed">
-        Een subsidie is geld van de gemeente voor uw plan. Dat geld hoeft in
-        principe niet terug. Er gelden wel voorwaarden. Achteraf laat u zien
+        Een subsidie is geld van de gemeente voor jouw plan. Dat geld hoeft in
+        principe niet terug. Er gelden wel voorwaarden. Achteraf laat je zien
         waar het geld aan is uitgegeven. Dat heet verantwoording. Klopt die
         niet, dan kan de gemeente het geld terugvragen.
       </p>
       <p className="mt-2 text-foreground/90 text-sm leading-relaxed">
-        Heeft u een plan voor uw buurt, uw woning of uw organisatie? Dan kan de
+        Heb je een plan voor je buurt, je woning of je organisatie? Dan kan de
         gemeente daar via een subsidieregeling aan meebetalen. Deze assistent
-        helpt u op weg met de regelingen die op dit moment lopen:
+        helpt je op weg met de regelingen die op dit moment lopen:
       </p>
       <ul className="mt-3 flex flex-col gap-2">
         {hulpPunten.map(({ icon: Icon, text }) => (

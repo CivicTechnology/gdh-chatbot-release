@@ -209,7 +209,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
       <SidebarGroup>
         <SidebarGroupContent>
           <div className="flex w-full flex-row items-center justify-center gap-2 px-2 text-sm text-muted-foreground">
-            Uw gesprekken verschijnen hier zodra u begint met chatten.
+            Je gesprekken verschijnen hier zodra je begint met chatten.
           </div>
         </SidebarGroupContent>
       </SidebarGroup>
@@ -352,7 +352,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
 
               {hasReachedEnd ? (
                 <div className="mt-8 flex w-full flex-row items-center justify-center gap-2 px-2 text-sm text-muted-foreground">
-                  U heeft het einde van uw gespreksgeschiedenis bereikt.
+                  Je hebt het einde van je gespreksgeschiedenis bereikt.
                 </div>
               ) : (
                 <div className="mt-8 flex flex-row items-center gap-2 p-2 text-muted-foreground">
@@ -367,7 +367,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
 
           {isAnonymous && localChats.length > 0 && (
             <div className="mt-8 flex w-full flex-row items-center justify-center gap-2 px-2 text-sm text-muted-foreground">
-              Chats worden lokaal opgeslagen in uw browser.
+              Chats worden lokaal opgeslagen in je browser.
             </div>
           )}
         </SidebarGroupContent>
@@ -376,11 +376,11 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
       <AlertDialog onOpenChange={setShowDeleteDialog} open={showDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Weet u het zeker?</AlertDialogTitle>
+            <AlertDialogTitle>Weet je het zeker?</AlertDialogTitle>
             <AlertDialogDescription>
               {isAnonymous
-                ? "Deze actie kan niet ongedaan worden gemaakt. Dit verwijdert uw chat uit uw browser."
-                : "Deze actie kan niet ongedaan worden gemaakt. Dit verwijdert uw chat definitief van onze servers."}
+                ? "Deze actie kan niet ongedaan worden gemaakt. Dit verwijdert je chat uit je browser."
+                : "Deze actie kan niet ongedaan worden gemaakt. Dit verwijdert je chat definitief van onze servers."}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

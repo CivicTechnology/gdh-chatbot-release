@@ -17,15 +17,15 @@ const HTTP_STATUS = {
 /** Melding per HTTP-status, in het Nederlands en op taalniveau B1. */
 const MESSAGE_BY_STATUS: Record<number, string> = {
   [HTTP_STATUS.networkError]:
-    "Er is geen verbinding. Controleer uw internet en probeer het opnieuw.",
+    "Er is geen verbinding. Controleer je internet en probeer het opnieuw.",
   [HTTP_STATUS.unauthorized]:
-    "U bent niet meer ingelogd. Log opnieuw in en probeer het nog een keer.",
+    "Je bent niet meer ingelogd. Log opnieuw in en probeer het nog een keer.",
   // Deze meldingen dekken beide richtingen: een deel-link aanmaken en het delen
   // weer stoppen. Vermijd daarom "u kunt dit niet delen".
   [HTTP_STATUS.forbidden]:
-    "Dit gesprek is niet van u. U kunt het delen daarom niet aanpassen.",
+    "Dit gesprek is niet van jou. Je kunt het delen daarom niet aanpassen.",
   [HTTP_STATUS.notFound]:
-    "Dit gesprek is nog niet opgeslagen. Stel eerst een vraag. Daarna kunt u het delen.",
+    "Dit gesprek is nog niet opgeslagen. Stel eerst een vraag. Daarna kun je het delen.",
 };
 
 // Dekt bewust beide richtingen (deel-link aanmaken en delen stoppen) zonder het

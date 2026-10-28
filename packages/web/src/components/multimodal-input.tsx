@@ -27,8 +27,8 @@ import { ArrowUpIcon, StopIcon } from "./icons";
 import { SuggestedActions } from "./suggested-actions";
 import { Button } from "./ui/button";
 
-const INVOER_PLACEHOLDER = "Stel uw vraag...";
-const INVOER_LABEL = "Stel uw vraag over subsidies van gemeente Den Haag";
+const INVOER_PLACEHOLDER = "Stel je vraag...";
+const INVOER_LABEL = "Stel je vraag over subsidies van gemeente Den Haag";
 
 function PureMultimodalInput({
   chatId,

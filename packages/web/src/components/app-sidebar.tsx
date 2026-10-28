@@ -45,7 +45,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                 width={24}
               />
               <span className="font-medium text-foreground text-sm">
-                KID-platform
+                AI zoektool
               </span>
             </Link>
           </div>

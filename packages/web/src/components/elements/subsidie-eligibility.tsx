@@ -78,7 +78,7 @@ function getStapKleur(index: number, currentStep: number): string {
 function Doorverwijzing() {
   return (
     <div className="text-muted-foreground text-sm">
-      <p>Hulp nodig bij uw plan?</p>
+      <p>Hulp nodig bij je plan?</p>
       <ul className="mt-1 flex flex-col gap-0.5">
         {DOORVERWIJZINGEN.map((partij) => (
           <li key={partij.url}>
@@ -306,15 +306,15 @@ function Recap({
   const banner = {
     ja: {
       cls: "border-green-200 bg-green-50 text-green-800 dark:border-green-900 dark:bg-green-950/30 dark:text-green-200",
-      text: "U komt waarschijnlijk in aanmerking",
+      text: "Je komt waarschijnlijk in aanmerking",
     },
     misschien: {
       cls: "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200",
-      text: "Mogelijk: controleer de punten die u met 'weet ik niet' beantwoordde",
+      text: "Mogelijk: controleer de punten die je met 'weet ik niet' beantwoordde",
     },
     nee: {
       cls: "border-orange-200 bg-orange-50 text-orange-800 dark:border-orange-900 dark:bg-orange-950/30 dark:text-orange-200",
-      text: "U voldoet (nog) niet aan alle voorwaarden",
+      text: "Je voldoet (nog) niet aan alle voorwaarden",
     },
   }[verdict];
 
